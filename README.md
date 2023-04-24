@@ -25,8 +25,8 @@ For python developer
 ```shell
 cd src
 python ./main.py \
-    --bindingAddress='127.0.0.1' \
-    --bindingPort='7821'
+    --bindingAddress=127.0.0.1 \
+    --bindingPort=7821
 ```
 
 ## TODO
