@@ -5,7 +5,15 @@
 # show logo
 # ==========
 from shares import logo
+import time
 print(logo)
+time.sleep(0.8)
+
+# ==========
+# read config
+# ==========
+from config import load_config_file
+config_info_entity = load_config_file()
 
 # ==========
 # make sure packages
@@ -14,11 +22,14 @@ from dynamicPip import DynamicPip, StaticResources
 from shares import REQUIRED_PACKAGES
 
 d_pip = DynamicPip()
-# for users who located in China main land
-d_pip.set_mirror_list([
-    StaticResources.DEFAULT_PYPI_HOST,
-    'https://mirrors.aliyun.com/pypi/simple',
-])
+
+if config_info_entity.dynamic_pip_proxy is not None:
+    # for users who want to use mirror
+    d_pip.set_mirror_list([
+        StaticResources.DEFAULT_PYPI_HOST,
+        config_info_entity.dynamic_pip_proxy,
+    ])
+
 for req_pkg in REQUIRED_PACKAGES:
     d_pip.install_single_package(req_pkg)
 del d_pip
@@ -27,7 +38,6 @@ del d_pip
 # main process
 # ==========
 import os
-# import logging
 from cheroot.wsgi import PathInfoDispatcher, Server
 from flask import Flask, request, Response
 
@@ -91,8 +101,8 @@ def release_env():
 # declare parameter
 # ==========
 FLAGS = flags.FLAGS
-flags.DEFINE_string('bindingAddress', '127.0.0.1', 'Binding address')
-flags.DEFINE_string('bindingPort', '7821', 'Binding port')
+flags.DEFINE_string('bindingAddress', None, 'Binding address')
+flags.DEFINE_string('bindingPort', None, 'Binding port')
 
 if __name__ == '__main__':
     app.run(main)
