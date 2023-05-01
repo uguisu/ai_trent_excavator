@@ -1,13 +1,25 @@
 # coding=utf-8
 # author xin.he
 
+from absl import app
+from absl import flags
+from absl import logging
+
+import shares
+
+# ==========
+# declare parameter
+# ==========
+FLAGS = flags.FLAGS
+flags.DEFINE_string('bindingAddress', None, 'Binding address')
+flags.DEFINE_string('bindingPort', None, 'Binding port')
+
+flags.DEFINE_string('isAutoInstallPackage', None, 'Install required packages automatically.')
+
 # ==========
 # show logo
 # ==========
-from shares import logo
-import time
-print(logo)
-time.sleep(0.8)
+shares.show_logo()
 
 # ==========
 # read config
@@ -18,21 +30,7 @@ config_info_entity = load_config_file()
 # ==========
 # make sure packages
 # ==========
-from dynamicPip import DynamicPip, StaticResources
-from shares import REQUIRED_PACKAGES
-
-d_pip = DynamicPip()
-
-if config_info_entity.dynamic_pip_proxy is not None:
-    # for users who want to use mirror
-    d_pip.set_mirror_list([
-        StaticResources.DEFAULT_PYPI_HOST,
-        config_info_entity.dynamic_pip_proxy,
-    ])
-
-for req_pkg in REQUIRED_PACKAGES:
-    d_pip.install_single_package(req_pkg)
-del d_pip
+shares.make_sure_packages(config_info_entity)
 
 # ==========
 # main process
@@ -40,10 +38,6 @@ del d_pip
 import os
 from cheroot.wsgi import PathInfoDispatcher, Server
 from flask import Flask, request, Response
-
-from absl import app
-from absl import flags
-from absl import logging
 
 # declare application object
 skate_app = Flask(__name__)
@@ -96,13 +90,6 @@ def release_env():
     """
     pass
 
-
-# ==========
-# declare parameter
-# ==========
-FLAGS = flags.FLAGS
-flags.DEFINE_string('bindingAddress', None, 'Binding address')
-flags.DEFINE_string('bindingPort', None, 'Binding port')
 
 if __name__ == '__main__':
     app.run(main)

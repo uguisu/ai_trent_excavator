@@ -2,10 +2,9 @@
 # author xin.he
 
 from .packages_list import (
-    REQUIRED_PACKAGES,
+    make_sure_packages,
 )
 
-
 from .banner import (
-    logo,
+    show_logo,
 )
