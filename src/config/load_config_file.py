@@ -61,16 +61,16 @@ def override_config_via_cli(args, conf_info: ConfigInfo) -> ConfigInfo:
     return conf_info
 
 
-# def load_config(FLAGS: flags.FLAGS) -> ConfigInfo:
-#     """
-#     load config
-#
-#     :param FLAGS: Abseil flag object
-#     :return: an instance of ConfigInfo object
-#     """
-#
-#     rtn = load_config_file()
-#
-#     rtn = override_config_via_cli(FLAGS, rtn)
-#
-#     return rtn
+def load_config(args) -> ConfigInfo:
+    """
+    load config
+
+    :param args: system argument variables
+    :return: an instance of ConfigInfo object
+    """
+
+    rtn = load_config_file()
+
+    rtn = override_config_via_cli(args, rtn)
+
+    return rtn

@@ -4,11 +4,11 @@ import argparse
 import logging
 
 import shares
-from config import load_config_file, override_config_via_cli
+from config import load_config
 
-# ==========
+# ============================================================
 # declare parameter
-# ==========
+# ============================================================
 parser = argparse.ArgumentParser(description='AI Trent Excavator (skate)')
 parser.add_argument('--bindingAddress',
                     action='store',
@@ -34,28 +34,22 @@ parser.add_argument('--isAutoInstallPackage',
 args = parser.parse_args()
 
 # logger
-logger = logging.getLogger('skai_analysis')
+logger = logging.getLogger('skATE')
 logger.setLevel(logging.INFO)
 
-# ==========
 # show logo
-# ==========
 shares.show_logo()
 
-# ==========
 # read config
-# ==========
-config_info_entity = load_config_file()
-config_info_entity = override_config_via_cli(args, config_info_entity)
+config_info_entity = load_config(args)
 
-# ==========
 # make sure packages
-# ==========
 shares.make_sure_packages(config_info_entity)
 
-# ==========
+# ============================================================
 # main process
-# ==========
+# NOTICE: DO NOT MOVE FOLLOWING 'IMPORT' CODE TO THE TOP
+# ============================================================
 import os
 from cheroot.wsgi import PathInfoDispatcher, Server
 from flask import Flask

@@ -6,6 +6,5 @@ from .config_info_entity import (
 )
 
 from .load_config_file import (
-    load_config_file,
-    override_config_via_cli,
+    load_config,
 )
