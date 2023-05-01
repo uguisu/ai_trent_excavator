@@ -11,6 +11,9 @@ from config import load_config
 # ============================================================
 from config import args
 
+# database connection
+db_connection = None
+
 # logger
 logger = logging.getLogger('skATE')
 logger.setLevel(logging.INFO)
@@ -42,7 +45,7 @@ def init_env():
     init environment
     """
 
-    global config_info_entity, logger
+    global config_info_entity, logger, db_connection
 
     # log file =====
     _log_formatter = logging.Formatter('%(asctime)s - %(name)s - %(funcName)s() - %(levelname)s - %(message)s')
@@ -54,12 +57,25 @@ def init_env():
     _console_handler.setFormatter(_log_formatter)
     logger.addHandler(_console_handler)
 
+    # determine database
+    # TODO if config_info_entity.es_xx
+    logger.info(f'Connecting database: {config_info_entity.mysql_host}:{config_info_entity.mysql_port}')
+    from data_mysql import MySQLConnector
+    db_connection = MySQLConnector(config_info_entity, logger).open_db_connection()
+
 
 def release_env():
     """
     release environment
     """
-    pass
+
+    global db_connection
+
+    try:
+        db_connection.close()
+    except Exception:
+        logger.warning('Exception occurs while closing database connection.')
+    logger.info('Database disconnected.')
 
 
 if __name__ == '__main__':
