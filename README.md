@@ -30,6 +30,6 @@ python ./main.py \
 ```
 
 ## TODO
-- [ ] MySQL connection
+- [x] MySQL connection
 - [ ] ES connection
 
