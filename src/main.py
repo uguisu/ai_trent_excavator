@@ -9,29 +9,7 @@ from config import load_config
 # ============================================================
 # declare parameter
 # ============================================================
-parser = argparse.ArgumentParser(description='AI Trent Excavator (skate)')
-parser.add_argument('--bindingAddress',
-                    action='store',
-                    dest='bindingAddress',
-                    default=None,
-                    help='Binding IP address')
-parser.add_argument('--bindingPort',
-                    action='store',
-                    dest='bindingPort',
-                    default=None,
-                    help='Binding Port')
-parser.add_argument('--proxy',
-                    action='store',
-                    dest='proxy',
-                    default=None,
-                    help='Proxy for install python packages dynamically')
-parser.add_argument('--isAutoInstallPackage',
-                    action='store',
-                    dest='isAutoInstallPackage',
-                    default=None,
-                    help='Install required packages automatically')
-
-args = parser.parse_args()
+from config import args
 
 # logger
 logger = logging.getLogger('skATE')

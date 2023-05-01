@@ -8,3 +8,7 @@ from .config_info_entity import (
 from .load_config_file import (
     load_config,
 )
+
+from .argparse_param import (
+    args,
+)

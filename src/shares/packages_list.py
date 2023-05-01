@@ -11,6 +11,8 @@ REQUIRED_PACKAGES = [
     'cheroot==9.0.0',
     # algorithm
     'scikit-learn==1.2.2',
+    # mysql
+    'PyMySQL==1.0.3',
 ]
 
 

@@ -48,15 +48,24 @@ def override_config_via_cli(args, conf_info: ConfigInfo) -> ConfigInfo:
 
     if args.bindingAddress is not None:
         conf_info.http_binding_address = args.bindingAddress
-
     if args.bindingPort is not None:
         conf_info.http_binding_port = args.bindingPort
 
     if args.proxy is not None:
         conf_info.dynamic_pip_proxy = args.proxy
-
     if args.isAutoInstallPackage is not None:
         conf_info.dynamic_pip_is_auto_install_package = args.isAutoInstallPackage
+
+    if args.mysqlHost is not None:
+        conf_info.mysql_host = args.mysqlHost
+    if args.mysqlPort is not None:
+        conf_info.mysql_port = args.mysqlPort
+    if args.mysqlUsername is not None:
+        conf_info.mysql_username = args.mysqlUsername
+    if args.mysqlPassword is not None:
+        conf_info.mysql_password = args.mysqlPassword
+    if args.mysqlSchema is not None:
+        conf_info.mysql_schema = args.mysqlSchema
 
     return conf_info
 
