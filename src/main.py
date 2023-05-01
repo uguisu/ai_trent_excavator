@@ -1,15 +1,13 @@
 # coding=utf-8
 # author xin.he
-import argparse
 import logging
 
 import shares
-from config import load_config
-
 # ============================================================
 # declare parameter
 # ============================================================
 from config import args
+from config import load_config
 
 # database connection
 db_connection = None
