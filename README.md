@@ -30,6 +30,5 @@ python ./main.py \
 ```
 
 ## TODO
-- [x] MySQL connection
-- [ ] ES connection
-
+- [x] ES connection
+- [ ] Software version comparison table
