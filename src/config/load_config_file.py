@@ -67,6 +67,15 @@ def override_config_via_cli(args, conf_info: ConfigInfo) -> ConfigInfo:
     if args.mysqlSchema is not None:
         conf_info.mysql_schema = args.mysqlSchema
 
+    if args.esHost is not None:
+        conf_info.es_host = args.esHost
+    if args.esPort is not None:
+        conf_info.es_port = args.esPort
+    if args.esUsername is not None:
+        conf_info.es_username = args.esUsername
+    if args.esPassword is not None:
+        conf_info.es_password = args.esPassword
+
     return conf_info
 
 

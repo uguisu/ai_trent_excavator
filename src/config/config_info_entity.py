@@ -36,6 +36,16 @@ class ConfigInfo:
         # schema
         self._mysql_schema = None
 
+        # [SECTION] elasticsearch
+        # host
+        self._es_host = None
+        # port
+        self._es_port = None
+        # username
+        self._es_username = None
+        # password
+        self._es_password = None
+
     @staticmethod
     def section_map() -> dict:
         """
@@ -56,6 +66,12 @@ class ConfigInfo:
                 'username',
                 'password',
                 'schema',
+            ],
+            'es': [
+                'host',
+                'port',
+                'username',
+                'password',
             ],
         }
 
@@ -105,7 +121,8 @@ class ConfigInfo:
 
     @mysql_port.setter
     def mysql_port(self, mysql_port):
-        self._mysql_port = int(mysql_port)
+        if mysql_port is not None:
+            self._mysql_port = int(mysql_port)
 
     @property
     def mysql_username(self) -> Union[None, str]:
@@ -130,3 +147,36 @@ class ConfigInfo:
     @mysql_schema.setter
     def mysql_schema(self, mysql_schema):
         self._mysql_schema = mysql_schema
+
+    @property
+    def es_host(self) -> Union[None, str]:
+        return self._es_host
+
+    @es_host.setter
+    def es_host(self, es_host):
+        self._es_host = es_host
+
+    @property
+    def es_port(self) -> Union[None, int]:
+        return self._es_port
+
+    @es_port.setter
+    def es_port(self, es_port):
+        if es_port is not None:
+            self._es_port = int(es_port)
+
+    @property
+    def es_username(self) -> Union[None, str]:
+        return self._es_username
+
+    @es_username.setter
+    def es_username(self, es_username):
+        self._es_username = es_username
+
+    @property
+    def es_password(self) -> Union[None, str]:
+        return self._es_password
+
+    @es_password.setter
+    def es_password(self, es_password):
+        self._es_password = es_password

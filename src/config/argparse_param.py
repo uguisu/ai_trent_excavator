@@ -52,6 +52,28 @@ def declare_argparse():
                         dest='mysqlSchema',
                         default=None,
                         help='Mysql Schema')
+
+    parser.add_argument('--esHost',
+                        action='store',
+                        dest='esHost',
+                        default=None,
+                        help='Elasticsearch Host')
+    parser.add_argument('--esPort',
+                        action='store',
+                        dest='esPort',
+                        default=None,
+                        help='Elasticsearch Port')
+    parser.add_argument('--esUsername',
+                        action='store',
+                        dest='esUsername',
+                        default=None,
+                        help='Elasticsearch User Name')
+    parser.add_argument('--esPassword',
+                        action='store',
+                        dest='esPassword',
+                        default=None,
+                        help='Elasticsearch Password')
+
     return parser
 
 

@@ -33,6 +33,8 @@ import os
 from cheroot.wsgi import PathInfoDispatcher, Server
 from flask import Flask
 
+import static_info
+
 # declare application object
 skate_app = Flask(__name__)
 skate_app.config['SECRET_KEY'] = os.urandom(24)
@@ -56,10 +58,20 @@ def init_env():
     logger.addHandler(_console_handler)
 
     # determine database
-    # TODO if config_info_entity.es_xx
-    logger.info(f'Connecting database: {config_info_entity.mysql_host}:{config_info_entity.mysql_port}')
-    from data_mysql import MySQLConnector
-    db_connection = MySQLConnector(config_info_entity, logger).open_db_connection()
+    if config_info_entity.es_host is not None:
+        # TODO connect to ES
+        logger.info('Find Elasticsearch connection info.')
+        logger.info(f'Connecting database: {config_info_entity.es_host}:{config_info_entity.es_port}')
+        # setup flag
+        static_info.DATA_SOURCE_FLG = static_info.DataSourceEnum.ES
+    else:
+        logger.info('Find MySQL connection info.')
+        logger.info(f'Connecting database: {config_info_entity.mysql_host}:{config_info_entity.mysql_port}')
+        from data_mysql import MySQLConnector
+        db_connection = MySQLConnector(config_info_entity, logger).open_db_connection()
+        # setup flag
+        static_info.DATA_SOURCE_FLG = static_info.DataSourceEnum.MySQL
+    logger.info('Database connected.')
 
 
 def release_env():
@@ -70,7 +82,12 @@ def release_env():
     global db_connection
 
     try:
-        db_connection.close()
+        if static_info.DATA_SOURCE_FLG is static_info.DataSourceEnum.MySQL:
+            db_connection.close()
+        else:
+            # TODO not sure
+            # db_connection.transport.connection_pool.close()
+            pass
     except Exception:
         logger.warning('Exception occurs while closing database connection.')
     logger.info('Database disconnected.')

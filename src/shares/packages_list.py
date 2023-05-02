@@ -13,6 +13,8 @@ REQUIRED_PACKAGES = [
     'scikit-learn==1.2.2',
     # mysql
     'PyMySQL==1.0.3',
+    # Elasticsearch
+    'elasticsearch==8.7.0'
 ]
 
 
