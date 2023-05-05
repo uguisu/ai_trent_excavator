@@ -64,6 +64,24 @@ def init_env():
         logger.info(f'Connecting database: {config_info_entity.es_host}:{config_info_entity.es_port}')
         # setup flag
         static_info.DATA_SOURCE_FLG = static_info.DataSourceEnum.ES
+
+        from elasticsearch import Elasticsearch
+        db_connection = Elasticsearch(
+            # ["192.168.11.16", "192.168.11.xxxx"], 连接集群，以列表的形式存放各节点的IP地址
+            [f'http://{config_info_entity.es_host}:{config_info_entity.es_port}'],
+            sniff_on_start=True,  # 连接前测试
+            sniff_on_connection_fail=True,  # 节点无响应时刷新节点
+            sniff_timeout=60  # 设置超时时间
+        )
+
+        # TODO debug
+        print(db_connection.info)
+        import elasticsearch
+        try:
+            print(db_connection.search(index='news'))
+        except elasticsearch.NotFoundError:
+            print('I know not found')
+
     else:
         logger.info('Find MySQL connection info.')
         logger.info(f'Connecting database: {config_info_entity.mysql_host}:{config_info_entity.mysql_port}')
@@ -87,7 +105,7 @@ def release_env():
         else:
             # TODO not sure
             # db_connection.transport.connection_pool.close()
-            pass
+            db_connection.close()
     except Exception:
         logger.warning('Exception occurs while closing database connection.')
     logger.info('Database disconnected.')
