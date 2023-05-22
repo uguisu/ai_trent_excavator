@@ -3,6 +3,7 @@
 import logging
 
 import shares
+from shares.message_code import StandardMessageCode
 # ============================================================
 # declare parameter
 # ============================================================
@@ -60,8 +61,9 @@ def init_env():
     # determine database
     if config_info_entity.es_host is not None:
         # TODO connect to ES
-        logger.info('Find Elasticsearch connection info.')
-        logger.info(f'Connecting database: {config_info_entity.es_host}:{config_info_entity.es_port}')
+        logger.info(StandardMessageCode.I_100_9000_200005.get_formatted_msg(db_name='ElasticSearch'))
+        logger.info(StandardMessageCode.I_100_9000_200001.get_formatted_msg(host=config_info_entity.es_host,
+                                                                            port=config_info_entity.es_port))
         # setup flag
         static_info.DATA_SOURCE_FLG = static_info.DataSourceEnum.ES
 
@@ -83,13 +85,14 @@ def init_env():
             print('I know not found')
 
     else:
-        logger.info('Find MySQL connection info.')
-        logger.info(f'Connecting database: {config_info_entity.mysql_host}:{config_info_entity.mysql_port}')
+        logger.info(StandardMessageCode.I_100_9000_200005.get_formatted_msg(db_name='MySql'))
+        logger.info(StandardMessageCode.I_100_9000_200001.get_formatted_msg(host=config_info_entity.mysql_host,
+                                                                            port=config_info_entity.mysql_port))
         from data_mysql import MySQLConnector
         db_connection = MySQLConnector(config_info_entity, logger).open_db_connection()
         # setup flag
         static_info.DATA_SOURCE_FLG = static_info.DataSourceEnum.MySQL
-    logger.info('Database connected.')
+    logger.info(StandardMessageCode.I_100_9000_200002.get_formatted_msg())
 
 
 def release_env():
@@ -108,7 +111,7 @@ def release_env():
             db_connection.close()
     except Exception:
         logger.warning('Exception occurs while closing database connection.')
-    logger.info('Database disconnected.')
+    logger.info(StandardMessageCode.I_100_9000_200003.get_formatted_msg())
 
 
 if __name__ == '__main__':
