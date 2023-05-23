@@ -60,7 +60,7 @@ def init_env():
 
     # determine database
     if config_info_entity.es_host is not None:
-        # TODO connect to ES
+        # connect to ES
         logger.info(StandardMessageCode.I_100_9000_200005.get_formatted_msg(db_name='ElasticSearch'))
         logger.info(StandardMessageCode.I_100_9000_200001.get_formatted_msg(host=config_info_entity.es_host,
                                                                             port=config_info_entity.es_port))
@@ -85,6 +85,7 @@ def init_env():
             print('I know not found')
 
     else:
+        # connect to mysql
         logger.info(StandardMessageCode.I_100_9000_200005.get_formatted_msg(db_name='MySql'))
         logger.info(StandardMessageCode.I_100_9000_200001.get_formatted_msg(host=config_info_entity.mysql_host,
                                                                             port=config_info_entity.mysql_port))
@@ -110,7 +111,7 @@ def release_env():
             # db_connection.transport.connection_pool.close()
             db_connection.close()
     except Exception:
-        logger.warning('Exception occurs while closing database connection.')
+        logger.warning(StandardMessageCode.W_100_9000_100001.get_formatted_msg())
     logger.info(StandardMessageCode.I_100_9000_200003.get_formatted_msg())
 
 
@@ -122,8 +123,9 @@ if __name__ == '__main__':
     server = Server((config_info_entity.http_binding_address, int(config_info_entity.http_binding_port)),
                     PathInfoDispatcher({'/': skate_app}))
 
-    logger.info(f'Server listening on {config_info_entity.http_binding_address}'
-                f':{config_info_entity.http_binding_port}')
+    # server get ready
+    logger.info(StandardMessageCode.I_100_9000_200004.get_formatted_msg(host=config_info_entity.http_binding_address,
+                                                                        port=config_info_entity.http_binding_port))
 
     try:
         server.start()
