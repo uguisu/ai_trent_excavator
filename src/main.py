@@ -71,9 +71,9 @@ def init_env():
         db_connection = Elasticsearch(
             # ["192.168.11.16", "192.168.11.xxxx"], 连接集群，以列表的形式存放各节点的IP地址
             [f'http://{config_info_entity.es_host}:{config_info_entity.es_port}'],
-            sniff_on_start=True,  # 连接前测试
-            sniff_on_connection_fail=True,  # 节点无响应时刷新节点
-            sniff_timeout=60  # 设置超时时间
+            sniff_on_start=True,
+            sniff_on_node_failure=True,
+            sniff_timeout=60
         )
 
         # TODO debug
