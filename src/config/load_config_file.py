@@ -4,6 +4,7 @@ import configparser
 import os
 
 from config.config_info_entity import ConfigInfo
+from shares.message_code import StandardMessageCode
 from static_info import CONFIG_FILE_NAME
 
 
@@ -14,9 +15,13 @@ def load_config_file() -> ConfigInfo:
     :return: an instance of ConfigInfo object
     """
     config_f = os.path.join(os.path.abspath(os.path.curdir), CONFIG_FILE_NAME)
-    print(f'Reading {config_f}')
+
+    # reading file
+    print(StandardMessageCode.I_100_9000_200006.get_formatted_msg(file_name=config_f))
+
     if not os.path.exists(config_f):
-        raise FileExistsError(f'Can not find config file {CONFIG_FILE_NAME}.')
+        # Can not find config file
+        raise FileExistsError(StandardMessageCode.E_100_9000_000002.get_formatted_msg(cfg_file_name=CONFIG_FILE_NAME))
 
     config_file_reader = configparser.ConfigParser()
     config_file_reader.read(config_f)

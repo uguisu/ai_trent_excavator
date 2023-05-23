@@ -62,6 +62,7 @@ def init_env():
     if config_info_entity.es_host is not None:
         # connect to ES
         logger.info(StandardMessageCode.I_100_9000_200005.get_formatted_msg(db_name='ElasticSearch'))
+        # Connecting database
         logger.info(StandardMessageCode.I_100_9000_200001.get_formatted_msg(host=config_info_entity.es_host,
                                                                             port=config_info_entity.es_port))
         # setup flag
@@ -87,12 +88,15 @@ def init_env():
     else:
         # connect to mysql
         logger.info(StandardMessageCode.I_100_9000_200005.get_formatted_msg(db_name='MySql'))
+        # Connecting database
         logger.info(StandardMessageCode.I_100_9000_200001.get_formatted_msg(host=config_info_entity.mysql_host,
                                                                             port=config_info_entity.mysql_port))
         from data_mysql import MySQLConnector
         db_connection = MySQLConnector(config_info_entity, logger).open_db_connection()
         # setup flag
         static_info.DATA_SOURCE_FLG = static_info.DataSourceEnum.MySQL
+
+    # Database connected
     logger.info(StandardMessageCode.I_100_9000_200002.get_formatted_msg())
 
 
@@ -111,7 +115,10 @@ def release_env():
             # db_connection.transport.connection_pool.close()
             db_connection.close()
     except Exception:
+        # Exception occurs while closing database connection
         logger.warning(StandardMessageCode.W_100_9000_100001.get_formatted_msg())
+
+    # Database disconnected
     logger.info(StandardMessageCode.I_100_9000_200003.get_formatted_msg())
 
 
