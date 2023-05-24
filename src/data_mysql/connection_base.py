@@ -1,7 +1,8 @@
 # coding=utf-8
 # author xin.he
-import pymysql
 import traceback
+
+from sqlalchemy import create_engine
 
 from config import ConfigInfo
 
@@ -25,17 +26,22 @@ class MySQLConnector:
         :return database connection object
         """
         try:
-            con_rtn = pymysql.connect(host=self._config_info_entity.mysql_host,
-                                      port=self._config_info_entity.mysql_port,
-                                      database=self._config_info_entity.mysql_schema,
-                                      user=self._config_info_entity.mysql_username,
-                                      password=self._config_info_entity.mysql_password)
-
-            return con_rtn
-        except pymysql.err.OperationalError:
+            con_rtn = create_engine(url=f'mysql+pymysql://{self._config_info_entity.mysql_username}:'
+                                        f'{self._config_info_entity.mysql_password}@'
+                                        f'{self._config_info_entity.mysql_host}:'
+                                        f'{self._config_info_entity.mysql_port}/'
+                                        f'{self._config_info_entity.mysql_schema}'
+                                        f'?charset=utf8mb4',
+                                    pool_size=5,
+                                    max_overflow=0,
+                                    pool_recycle=5*60,
+                                    isolation_level="READ COMMITTED")
+        except:
+            # log error
             if self._logging is not None:
                 self._logging.error(traceback.format_exc())
-
             from shares.message_code import StandardMessageCode
             # database connection failed
             raise RuntimeError(StandardMessageCode.E_100_9000_000001.get_formatted_msg(db='MySQL'))
+
+        return con_rtn

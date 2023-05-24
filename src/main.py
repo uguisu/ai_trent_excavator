@@ -109,7 +109,7 @@ def release_env():
 
     try:
         if static_info.DATA_SOURCE_FLG is static_info.DataSourceEnum.MySQL:
-            db_connection.close()
+            db_connection.dispose()
         else:
             # TODO not sure
             # db_connection.transport.connection_pool.close()

@@ -11,8 +11,11 @@ REQUIRED_PACKAGES = [
     'cheroot==9.0.0',
     # algorithm
     'scikit-learn==1.2.2',
+    # data model
+    'SQLAlchemy==2.0.15',
     # mysql
     'PyMySQL==1.0.3',
+    'cryptography==40.0.2',
     # Elasticsearch
     'elasticsearch==8.7.0'
 ]
