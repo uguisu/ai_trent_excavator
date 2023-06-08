@@ -13,6 +13,7 @@ REQUIRED_PACKAGES = [
     'scikit-learn==1.2.2',
     # data model
     'SQLAlchemy==2.0.15',
+    'pandas==2.0.2',
     # mysql
     'PyMySQL==1.0.3',
     'cryptography==40.0.2',
