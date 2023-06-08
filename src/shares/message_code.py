@@ -11,6 +11,8 @@ class StandardMessageCode(Enum):
     # error
     E_100_9000_000001 = (1009000000001, '{db} database connection failed')
     E_100_9000_000002 = (1009000000002, 'Can not find config file {cfg_file_name}')
+    E_100_9000_000003 = (1009000000003, 'Please train model before predict')
+    E_100_9000_000004 = (1009000000004, 'Invalid parameter')
 
     # warning
     W_100_9000_100001 = (1009000100001, 'Exception occurs while closing database connection')
