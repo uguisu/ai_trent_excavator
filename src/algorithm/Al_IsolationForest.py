@@ -6,6 +6,8 @@ from algorithm.AbstractAlgorithm import BaseAlgorithm
 class AlIsolationForest(BaseAlgorithm):
     """
     IsolationForest
+
+    Refer: https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.IsolationForest.html
     """
 
     def __init__(self,
@@ -15,6 +17,14 @@ class AlIsolationForest(BaseAlgorithm):
                  n_jobs: int = 2):
         """
         init
+
+        :param n_estimators: The number of base estimators in the ensemble.
+        :param contamination: ‘auto’ or float, default=‘auto’.
+            The amount of contamination of the data set, i.e. the proportion of outliers in the data set.
+        :param max_features: int or float, default=1.0
+            The number of features to draw from X to train each base estimator.
+        :param n_jobs: int, default=None
+            The number of jobs to run in parallel for both fit and predict.
         """
 
         super().__init__()
@@ -51,6 +61,7 @@ class AlIsolationForest(BaseAlgorithm):
 
         # verify
         if self.data is None:
+            # invalid parameter
             raise ValueError(StandardMessageCode.E_100_9000_000004.get_formatted_msg())
 
         self.model.fit(self.data)
@@ -67,8 +78,10 @@ class AlIsolationForest(BaseAlgorithm):
 
         # verify
         if kwargs is None:
+            # invalid parameter
             raise ValueError(StandardMessageCode.E_100_9000_000004.get_formatted_msg())
         if self.model is None:
+            # train model before predict
             raise AttributeError(StandardMessageCode.E_100_9000_000003.get_formatted_msg())
 
         return self.model.predict(kwargs['data'])
