@@ -1,1 +1,2 @@
 dynamic-pip==1.1.1
+pytest==7.3.2
