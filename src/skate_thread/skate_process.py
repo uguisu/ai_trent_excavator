@@ -1,14 +1,14 @@
 # coding=utf-8
 # author xin.he
-from shares.message_code import StandardMessageCode
 from datetime import datetime
 
+from shares.message_code import StandardMessageCode
 from skate_thread.skate_job import AbstractSkateJob
 
 
-class AbstractThreadPool:
+class AbstractProcessPool:
     """
-    Abstract Thread Pool
+    Abstract Process Pool
     """
     def __init__(self, log):
         """
@@ -27,9 +27,9 @@ class AbstractThreadPool:
         return self._log
 
 
-class ScheduledFixedThreadPool(AbstractThreadPool):
+class ScheduledFixedProcessPool(AbstractProcessPool):
     """
-    Scheduled Fixed Thread Pool
+    Scheduled Fixed Process Pool
     """
 
     def __init__(self,
@@ -49,7 +49,7 @@ class ScheduledFixedThreadPool(AbstractThreadPool):
         """
         add job to thread pool
 
-        :param job: job object
+        :param job: AbstractSkateJob object
         """
 
         # verify
@@ -77,7 +77,21 @@ class ScheduledFixedThreadPool(AbstractThreadPool):
         self._job_dict[_name] = job
 
         # start job
-        job.execute_job()
+        self._job_dict.get(_name).process.start()
+
+        self.log.info(f'{_name} job started')
+
+    def stop_process_by_name(self, process_name: str = ''):
+        """
+        stop process by name
+
+        :param process_name: process name
+        """
+
+        print(f'stop {process_name}')
+
+        proc_obj = self._job_dict.pop(process_name)
+        proc_obj.process.kill()
 
     @property
     def job_amount(self) -> int:

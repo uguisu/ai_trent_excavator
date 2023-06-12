@@ -1,5 +1,7 @@
 # coding=utf-8
 # author xin.he
+import time
+from multiprocessing import Process
 
 
 class AbstractSkateJob:
@@ -19,20 +21,20 @@ class AbstractSkateJob:
 
         self._name = name
         self._interval_second = interval_second
-        # thread cancel flag
+        # process cancel flag
         self._cancel_flg = False
+        # process
+        self._process = Process(target=self.execute_job)
 
     def execute_job(self):
         """
-        start job
+        execute job
         """
-
-        # call job function
-        self.job_fn()
-
-        if not self.cancel_flg:
-            import threading
-            threading.Timer(self._interval_second, self.execute_job()).start()
+        while not self.cancel_flg:
+            # call job function
+            self.job_fn()
+            # sleep
+            time.sleep(self._interval_second)
 
     def job_fn(self):
         """
@@ -63,3 +65,10 @@ class AbstractSkateJob:
         setup algorithm name
         """
         self._name = name
+
+    @property
+    def process(self):
+        """
+        process
+        """
+        return self._process
