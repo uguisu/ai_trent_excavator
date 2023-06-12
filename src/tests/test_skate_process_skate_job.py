@@ -34,8 +34,8 @@ class MyTestSkateJob(AbstractSkateJob):
 
         this method should be overwritten before execute
         """
-        from datetime import datetime
-        print(datetime.now().strftime("%Y%m%d%_H%M%S"))
+        from shares.time_util import get_current_date_time
+        print(get_current_date_time())
 
         # import time
         time.sleep(2)

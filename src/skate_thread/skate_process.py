@@ -1,6 +1,5 @@
 # coding=utf-8
 # author xin.he
-from datetime import datetime
 
 from shares.message_code import StandardMessageCode
 from skate_thread.skate_job import AbstractSkateJob
@@ -62,7 +61,8 @@ class ScheduledFixedProcessPool(AbstractProcessPool):
 
         if job.name is None or '' == job.name.strip():
             # generate a thread name
-            _name = f'job_{self._job_counter}_{datetime.now().strftime("%Y%m%d%_H%M%S")}'
+            from shares.time_util import get_current_date_time
+            _name = f'job_{self._job_counter}_{get_current_date_time()}'
         else:
             _name = job.name
 
