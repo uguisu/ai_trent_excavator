@@ -49,7 +49,7 @@ class MyTestSkateJob(AbstractSkateJob):
         time.sleep(2)
 
 
-class TestSkateProcess_001(unittest.TestCase):
+class TestSkateProcess001(unittest.TestCase):
 
     def test_skate_job(self):
 
