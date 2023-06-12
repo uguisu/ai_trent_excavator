@@ -4,6 +4,7 @@ import logging
 import time
 import unittest
 
+import static_info
 from skate_thread.skate_job import AbstractSkateJob
 from skate_thread.skate_process import ScheduledFixedProcessPool
 
@@ -12,7 +13,7 @@ logger = logging.getLogger('skATE')
 logger.setLevel(logging.INFO)
 
 _console_handler = logging.StreamHandler()
-_log_formatter = logging.Formatter('%(asctime)s - %(name)s - %(funcName)s() - %(levelname)s - %(message)s')
+_log_formatter = logging.Formatter(static_info.LOG_FORMAT_STR)
 _console_handler.setFormatter(_log_formatter)
 logger.addHandler(_console_handler)
 

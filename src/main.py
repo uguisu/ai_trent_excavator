@@ -49,7 +49,7 @@ def init_env():
     global config_info_entity, logger, db_connection
 
     # log file =====
-    _log_formatter = logging.Formatter('%(asctime)s - %(name)s - %(funcName)s() - %(levelname)s - %(message)s')
+    _log_formatter = logging.Formatter(static_info.LOG_FORMAT_STR)
     _file_handler = logging.FileHandler('./AiOps.log', mode='w', encoding='utf-8')
     _file_handler.setFormatter(_log_formatter)
     logger.addHandler(_file_handler)
