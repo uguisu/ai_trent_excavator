@@ -62,7 +62,7 @@ class AlIsolationForest(BaseAlgorithm):
         # verify
         if self.data is None:
             # invalid parameter
-            raise ValueError(StandardMessageCode.E_100_9000_000004.get_formatted_msg())
+            raise ValueError(StandardMessageCode.E_100_9000_000004.get_formatted_msg(parameter_name='data'))
 
         self.model.fit(self.data)
 
@@ -79,7 +79,8 @@ class AlIsolationForest(BaseAlgorithm):
         # verify
         if kwargs is None:
             # invalid parameter
-            raise ValueError(StandardMessageCode.E_100_9000_000004.get_formatted_msg())
+            raise ValueError(StandardMessageCode.E_100_9000_000004.get_formatted_msg(
+                parameter_name='data for prediction'))
         if self.model is None:
             # train model before predict
             raise AttributeError(StandardMessageCode.E_100_9000_000003.get_formatted_msg())

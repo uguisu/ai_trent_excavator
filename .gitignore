@@ -105,3 +105,4 @@ nenv/
 .idea
 
 play_code/
+.pytest_cache/
