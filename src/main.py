@@ -41,6 +41,16 @@ skate_app = Flask(__name__)
 skate_app.config['SECRET_KEY'] = os.urandom(24)
 
 
+@skate_app.route('/serviceList', methods=['GET'])
+def get_service_list():
+    """
+    get service list
+    """
+    return {
+        "services": [1, 2, 3]
+    }
+
+
 def init_env():
     """
     init environment
