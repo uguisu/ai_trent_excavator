@@ -3,15 +3,17 @@
 import logging
 
 import shares
+from config import args
+from config import load_config
 from shares.message_code import StandardMessageCode
+from skate_thread.skate_process import ScheduledFixedProcessPool
+
 # ============================================================
 # declare parameter
 # ============================================================
-from config import args
-from config import load_config
-
 # database connection
 db_connection = None
+process_pool: ScheduledFixedProcessPool = None
 
 # logger
 logger = logging.getLogger('skATE')
@@ -56,7 +58,7 @@ def init_env():
     init environment
     """
 
-    global config_info_entity, logger, db_connection
+    global config_info_entity, logger, db_connection, process_pool
 
     # log file =====
     _log_formatter = logging.Formatter(static_info.LOG_FORMAT_STR)
@@ -106,6 +108,10 @@ def init_env():
         # setup flag
         static_info.DATA_SOURCE_FLG = static_info.DataSourceEnum.MySQL
 
+    # open process pool
+    # TODO move pool_size to config file
+    process_pool = ScheduledFixedProcessPool(logger, pool_size=10)
+
     # Database connected
     logger.info(StandardMessageCode.I_100_9000_200002.get_formatted_msg())
 
@@ -115,7 +121,7 @@ def release_env():
     release environment
     """
 
-    global db_connection
+    global db_connection, process_pool
 
     try:
         if static_info.DATA_SOURCE_FLG is static_info.DataSourceEnum.MySQL:
@@ -127,6 +133,11 @@ def release_env():
     except Exception:
         # Exception occurs while closing database connection
         logger.warning(StandardMessageCode.W_100_9000_100001.get_formatted_msg())
+
+    # release process_pool
+    if process_pool is not None and process_pool.job_amount >= 0:
+        _p = process_pool.stop_all_process()
+        del process_pool
 
     # Database disconnected
     logger.info(StandardMessageCode.I_100_9000_200003.get_formatted_msg())
