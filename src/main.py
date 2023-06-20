@@ -43,14 +43,46 @@ skate_app = Flask(__name__)
 skate_app.config['SECRET_KEY'] = os.urandom(24)
 
 
+
+
+
+p = None
+p_name = ''
 @skate_app.route('/serviceList', methods=['GET'])
 def get_service_list():
     """
     get service list
     """
+
+    global p, p_name, logger
+
+    from skate_thread.my_demo_job import Peppa
+    from multiprocessing import Queue
+    from shares.time_util import get_current_date_time
+
+    if p is None:
+        p_name = f'Peppa-{get_current_date_time()}'
+        p = Peppa(Queue(), logger, p_name)
+        process_pool.add_job(p)
+
+    # logger.info(f'from main name: {__name__}')
+    logger.info(f'from main parent process id: {os.getppid()}')
+    logger.info(f'from main process id: {os.getpid()}')
+
+
     return {
         "services": [1, 2, 3]
     }
+
+@skate_app.route('/get_val', methods=['GET'])
+def get_val():
+    global p, p_name, logger
+
+    if p is None:
+        return []
+
+    _tmp_p = process_pool.get_process_by_name(p_name)
+    return _tmp_p.predict('from get val')
 
 
 def init_env():
