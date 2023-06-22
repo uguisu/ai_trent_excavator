@@ -7,6 +7,7 @@ from config import args
 from config import load_config
 from shares.message_code import StandardMessageCode
 from skate_thread.skate_process import ScheduledFixedProcessPool
+from shares.time_util import get_current_date_time
 
 # ============================================================
 # declare parameter
@@ -43,45 +44,78 @@ skate_app = Flask(__name__)
 skate_app.config['SECRET_KEY'] = os.urandom(24)
 
 
-
-
-
-p = None
-p_name = ''
 @skate_app.route('/serviceList', methods=['GET'])
 def get_service_list():
     """
     get service list
     """
+    return {
+        "services": [1, 2, 3]
+    }
 
-    global p, p_name, logger
 
+@skate_app.route('/api/1/declareService/<string:al_id>', methods=['GET'])
+def declare_service(al_id):
+    """
+    declare service
+
+    :param al_id: algorithm id
+
+    :return: real process id, if success
+    """
+
+    global logger
+
+    method_name = 'declare_service'
+    logger.info(StandardMessageCode.I_100_9000_200012.get_formatted_msg(method_name=method_name))
+
+    # get real class
+    from algorithm.algorithm_map import algorithm_map
+    al_class = algorithm_map.get(al_id)
+
+    if al_class is None:
+        # target algorithm do not exist
+        logger.info(StandardMessageCode.I_100_9000_200013.get_formatted_msg(method_name=method_name))
+        return StandardMessageCode.W_100_9000_100004.get_formatted_msg(algorithm_id=al_id)
+
+    # get name
+    _process_id = f'{al_id}-{get_current_date_time()}'
+
+
+    # get instance
+    # TODO import
     from skate_thread.my_demo_job import Peppa
-    from multiprocessing import Queue
-    from shares.time_util import get_current_date_time
+    _process_obj = eval(f'{al_class}(logger, "{_process_id}")')
+    process_pool.add_job(_process_obj)
 
-    if p is None:
-        p_name = f'Peppa-{get_current_date_time()}'
-        p = Peppa(Queue(), logger, p_name)
-        process_pool.add_job(p)
 
     # logger.info(f'from main name: {__name__}')
     logger.info(f'from main parent process id: {os.getppid()}')
     logger.info(f'from main process id: {os.getpid()}')
 
+    logger.info(StandardMessageCode.I_100_9000_200013.get_formatted_msg(method_name=method_name))
 
-    return {
-        "services": [1, 2, 3]
-    }
+    return _process_id
 
-@skate_app.route('/get_val', methods=['GET'])
-def get_val():
-    global p, p_name, logger
 
-    if p is None:
-        return []
+@skate_app.route('/api/1/get_val/<string:process_id>', methods=['GET'])
+def get_val(process_id):
+    """
+    get predict value by process id
 
-    _tmp_p = process_pool.get_process_by_name(p_name)
+    :param process_id: process id
+
+    :return: predicted value
+    """
+    global logger
+
+    method_name = 'get_val'
+    logger.info(StandardMessageCode.I_100_9000_200012.get_formatted_msg(method_name=method_name))
+
+    _tmp_p = process_pool.get_process_by_name(process_id)
+
+    logger.info(StandardMessageCode.I_100_9000_200013.get_formatted_msg(method_name=method_name))
+
     return _tmp_p.predict('from get val')
 
 

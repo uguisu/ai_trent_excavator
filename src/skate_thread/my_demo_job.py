@@ -10,7 +10,6 @@ class Peppa(AbstractSkateJob):
     """
 
     def __init__(self,
-                 queue: Queue,
                  log,
                  name: str = '',
                  interval_second: int = 15):
@@ -120,11 +119,12 @@ class Peppa(AbstractSkateJob):
         self._logger.info(f'train start')
         dt = get_current_date_time()
 
+        # dummy training
+        time.sleep(5)
+
         # update model
         self._lock.acquire()
         try:
-            # self._model = dt
-
             # remove all older model
             while not q.empty():
                 q.get()
@@ -132,10 +132,7 @@ class Peppa(AbstractSkateJob):
             q.put(dt)
             self._logger.info(f'put {dt} to queue')
 
-            # import time
-            time.sleep(5)
         except Exception as e:
-            # raise e
             self._logger.error(e)
         finally:
             self._lock.release()
