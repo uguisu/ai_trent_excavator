@@ -61,7 +61,7 @@ def declare_service(al_id):
 
     :param al_id: algorithm id
 
-    :return: real process id, if success
+    :return: real process id, if success. This id should be used as key word for further prediction
     """
 
     global logger
@@ -94,12 +94,12 @@ def declare_service(al_id):
     return _process_id
 
 
-@skate_app.route('/api/1/get_val/<string:process_id>', methods=['GET'])
+@skate_app.route('/api/1/getVal/<string:process_id>', methods=['GET'])
 def get_val(process_id):
     """
     get predict value by process id
 
-    :param process_id: process id
+    :param process_id: process id. This id is the return value of the declare_service() function
 
     :return: predicted value
     """
