@@ -80,14 +80,10 @@ def declare_service(al_id):
 
     # get name
     _process_id = f'{al_id}-{get_current_date_time()}'
-
-
     # get instance
-    # TODO import
-    from skate_thread.my_demo_job import Peppa
-    _process_obj = eval(f'{al_class}(logger, "{_process_id}")')
+    exec(f'from {al_class.package_name} import {al_class.class_name}')
+    _process_obj = eval(f'{al_class.class_name}(logger, "{_process_id}")')
     process_pool.add_job(_process_obj)
-
 
     # logger.info(f'from main name: {__name__}')
     logger.info(f'from main parent process id: {os.getppid()}')
