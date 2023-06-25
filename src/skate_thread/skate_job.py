@@ -1,7 +1,7 @@
 # coding=utf-8
 # author xin.he
 import time
-from multiprocessing import Process
+from multiprocessing import Process, Queue
 
 
 class AbstractSkateJob:
@@ -23,24 +23,41 @@ class AbstractSkateJob:
         self._interval_second = interval_second
         # process cancel flag
         self._cancel_flg = False
-        # process
-        self._process = Process(target=self.execute_job)
+        # sync trained model
+        self._queue = Queue()
 
-    def execute_job(self):
+        # process
+        self._process = Process(target=self.execute_job, args=(self._queue, ))
+
+    def execute_job(self, q):
         """
-        execute job
+        daemon job
+
+        :param q: queue object(self._queue)
         """
         while not self.cancel_flg:
-            # call job function
-            self.job_fn()
+            # call train function
+            self.train(q)
             # sleep
             time.sleep(self._interval_second)
 
-    def job_fn(self):
+    def train(self, q):
         """
-        job function
+        train
 
         this method should be overwritten before execute
+
+        :param q: queue object(self._queue)
+        """
+        raise NotImplementedError()
+
+    def predict(self, in_data):
+        """
+        predict
+
+        this method should be overwritten before execute
+
+        :param in_data: input data
         """
         raise NotImplementedError()
 

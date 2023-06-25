@@ -1,8 +1,10 @@
+import os
 import time
-from multiprocessing import Process, Lock, Queue, Value
+from multiprocessing import Lock
+
 from shares.time_util import get_current_date_time
 from skate_thread.skate_job import AbstractSkateJob
-import os
+
 
 class Peppa(AbstractSkateJob):
     """
@@ -16,6 +18,7 @@ class Peppa(AbstractSkateJob):
         """
         init
 
+        :param log: logger object
         :param name: job name
         :param interval_second: interval second.
         """
@@ -32,29 +35,7 @@ class Peppa(AbstractSkateJob):
         # model object
         self._model = None
 
-        self._queue = Queue()
-
         self._lock = Lock()
-
-
-        self._name = name
-        self._interval_second = interval_second
-        # process cancel flag
-        self._cancel_flg = False
-        # process
-        self._process = Process(target=self.execute_job, args=(self._queue, ))
-
-
-    def execute_job(self, q):
-        """
-        daemon job
-        """
-        while not self.cancel_flg:
-            # call train function
-            self.train(q)
-            # sleep
-            time.sleep(self._interval_second)
-
 
     def predict(self, in_data):
         """
@@ -105,7 +86,6 @@ class Peppa(AbstractSkateJob):
 
         return rtn
 
-
     def train(self, q):
         """
         train
@@ -114,7 +94,6 @@ class Peppa(AbstractSkateJob):
         # self._logger.info(f'from train name: {__name__}')
         self._logger.info(f'from train parent process id: {os.getppid()}')
         self._logger.info(f'from train process id: {os.getpid()}')
-
 
         self._logger.info(f'train start')
         dt = get_current_date_time()
@@ -138,32 +117,3 @@ class Peppa(AbstractSkateJob):
             self._lock.release()
 
         self._logger.info(f'train finish')
-
-    @property
-    def cancel_flg(self) -> bool:
-        return self._cancel_flg
-
-    @cancel_flg.setter
-    def cancel_flg(self, cancel_flg: bool):
-        self._cancel_flg = cancel_flg
-
-    @property
-    def name(self) -> str:
-        """
-        name
-        """
-        return self._name
-
-    @name.setter
-    def name(self, name: str):
-        """
-        setup algorithm name
-        """
-        self._name = name
-
-    @property
-    def process(self):
-        """
-        process
-        """
-        return self._process
