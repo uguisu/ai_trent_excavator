@@ -46,6 +46,10 @@ class ConfigInfo:
         # password
         self._es_password = None
 
+        # [SECTION] log_level
+        # log level
+        self._sk_log_level = None
+
     @staticmethod
     def section_map() -> dict:
         """
@@ -72,6 +76,9 @@ class ConfigInfo:
                 'port',
                 'username',
                 'password',
+            ],
+            'sk_log': [
+                'level',
             ],
         }
 
@@ -180,3 +187,11 @@ class ConfigInfo:
     @es_password.setter
     def es_password(self, es_password):
         self._es_password = es_password
+
+    @property
+    def sk_log_level(self) -> Union[None, int]:
+        return self._sk_log_level
+
+    @sk_log_level.setter
+    def sk_log_level(self, sk_log_level):
+        self._sk_log_level = int(sk_log_level)

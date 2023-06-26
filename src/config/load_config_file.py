@@ -81,6 +81,9 @@ def override_config_via_cli(args, conf_info: ConfigInfo) -> ConfigInfo:
     if args.esPassword is not None:
         conf_info.es_password = args.esPassword
 
+    if args.skLogLevel is not None:
+        conf_info.sk_log_level = args.skLogLevel
+
     return conf_info
 
 
