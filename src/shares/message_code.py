@@ -29,7 +29,8 @@ class StandardMessageCode(Enum):
     I_100_9000_200004 = (1009000200004, 'Server listening on {host}:{port}')
     I_100_9000_200005 = (1009000200005, 'Find {db_name} connection info')
     I_100_9000_200006 = (1009000200006, 'Reading {file_name}')
-    # 7
+    I_100_9000_200007 = (1009000200007, 'From {program_name}:\nparent process id -> {pp_id}\n'
+                                        '\t\t┗ local process id -> {l_id}')
     I_100_9000_200008 = (1009000200008, 'Generating job with name: {job_name}')
     I_100_9000_200009 = (1009000200009, 'Get job by name: {job_name}')
     I_100_9000_200010 = (1009000200010, 'Stop job by name: {job_name}')

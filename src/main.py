@@ -6,8 +6,9 @@ import shares
 from config import args
 from config import load_config
 from shares.message_code import StandardMessageCode
-from skate_thread.skate_process import ScheduledFixedProcessPool
+from shares.skate_enum import DebugLevel
 from shares.time_util import get_current_date_time
+from skate_thread.skate_process import ScheduledFixedProcessPool
 
 # ============================================================
 # declare parameter
@@ -82,12 +83,16 @@ def declare_service(al_id):
     _process_id = f'{al_id}-{get_current_date_time()}'
     # get instance
     exec(f'from {al_class.package_name} import {al_class.class_name}')
-    _process_obj = eval(f'{al_class.class_name}(logger, "{_process_id}")')
+    _process_obj = eval(f'{al_class.class_name}(logger, {config_info_entity.sk_log_level}, "{_process_id}")')
     process_pool.add_job(_process_obj)
 
-    # logger.info(f'from main name: {__name__}')
-    logger.info(f'from main parent process id: {os.getppid()}')
-    logger.info(f'from main process id: {os.getpid()}')
+    # log
+    if config_info_entity.sk_log_level >= DebugLevel.LEVEL_2.value:
+        logger.info(StandardMessageCode.I_100_9000_200007.get_formatted_msg(
+            program_name='main',
+            pp_id=os.getppid(),
+            l_id=os.getpid(),
+        ))
 
     logger.info(StandardMessageCode.I_100_9000_200013.get_formatted_msg(method_name=method_name))
 
