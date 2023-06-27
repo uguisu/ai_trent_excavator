@@ -38,6 +38,7 @@ from cheroot.wsgi import PathInfoDispatcher, Server
 from flask import Flask
 from flasgger import Swagger, swag_from
 
+from skATE.shares.api_interfaces import BaseRsp
 import static_info
 
 # declare application object
@@ -106,7 +107,9 @@ def declare_service(al_id):
 
     logger.info(StandardMessageCode.I_100_9000_200013.get_formatted_msg(method_name=method_name))
 
-    return _process_id
+    rtn = BaseRsp(_process_id, True, None).to_dict()
+
+    return rtn
 
 
 @skate_app.route('/api/1/getPredictVal/<string:process_id>', methods=['GET'])
@@ -128,7 +131,9 @@ def get_predict_val(process_id):
 
     logger.info(StandardMessageCode.I_100_9000_200013.get_formatted_msg(method_name=method_name))
 
-    return _tmp_p.predict('from get val')
+    rtn = BaseRsp(_tmp_p.predict('from get val'), True, None).to_dict()
+
+    return rtn
 
 
 def init_env():
