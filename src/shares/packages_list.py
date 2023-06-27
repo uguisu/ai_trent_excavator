@@ -9,6 +9,7 @@ REQUIRED_PACKAGES = [
     # web server
     'Flask==2.2.3',
     'cheroot==9.0.0',
+    'flasgger==0.9.7.1'
     # algorithm
     'scikit-learn==1.2.2',
     # data model

@@ -37,12 +37,22 @@ shares.make_sure_packages(config_info_entity)
 import os
 from cheroot.wsgi import PathInfoDispatcher, Server
 from flask import Flask
+from flasgger import Swagger, swag_from
 
 import static_info
 
 # declare application object
 skate_app = Flask(__name__)
 skate_app.config['SECRET_KEY'] = os.urandom(24)
+skate_app.config['SWAGGER'] = {
+    'title': 'AI Trent Excavator (skate)',
+    'uiversion': 3,
+    'version': f'{static_info.__version__}',
+    'description': 'AI Trent Excavator for Apache Skywalking.',
+    'termsOfService': 'https://github.com/uguisu/ai_trent_excavator'
+}
+# swagger
+Swagger(skate_app)
 
 
 @skate_app.route('/serviceList', methods=['GET'])
@@ -56,9 +66,10 @@ def get_service_list():
 
 
 @skate_app.route('/api/1/declareService/<string:al_id>', methods=['GET'])
+@swag_from('yaml/declareService.yaml')
 def declare_service(al_id):
     """
-    declare service
+    declare algorithm service
 
     :param al_id: algorithm id
 
@@ -99,8 +110,9 @@ def declare_service(al_id):
     return _process_id
 
 
-@skate_app.route('/api/1/getVal/<string:process_id>', methods=['GET'])
-def get_val(process_id):
+@skate_app.route('/api/1/getPredictVal/<string:process_id>', methods=['GET'])
+@swag_from('yaml/getPredictVal.yaml')
+def get_predict_val(process_id):
     """
     get predict value by process id
 
