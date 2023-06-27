@@ -1,6 +1,6 @@
 # coding=utf-8
 # author xin.he
-from algorithm.AbstractAlgorithm import BaseAlgorithm
+from skATE.algorithm.AbstractAlgorithm import BaseAlgorithm
 
 
 class AlIsolationForest(BaseAlgorithm):
@@ -57,7 +57,7 @@ class AlIsolationForest(BaseAlgorithm):
         train model
         """
 
-        from shares.message_code import StandardMessageCode
+        from skATE.shares.message_code import StandardMessageCode
 
         # verify
         if self.data is None:
@@ -74,7 +74,7 @@ class AlIsolationForest(BaseAlgorithm):
 
         """
 
-        from shares.message_code import StandardMessageCode
+        from skATE.shares.message_code import StandardMessageCode
 
         # verify
         if kwargs is None:

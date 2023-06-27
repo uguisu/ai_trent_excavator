@@ -3,9 +3,9 @@
 import configparser
 import os
 
-from config.config_info_entity import ConfigInfo
-from shares.message_code import StandardMessageCode
-from static_info import CONFIG_FILE_NAME
+from skATE.config.config_info_entity import ConfigInfo
+from skATE.shares.message_code import StandardMessageCode
+from skATE.static_info import CONFIG_FILE_NAME
 
 
 def load_config_file() -> ConfigInfo:

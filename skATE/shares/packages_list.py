@@ -1,6 +1,6 @@
 # coding=utf-8
 # author xin.he
-from config import ConfigInfo
+from skATE.config import ConfigInfo
 
 # all required packages
 REQUIRED_PACKAGES = [

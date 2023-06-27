@@ -2,13 +2,12 @@
 # author xin.he
 import logging
 
-import shares
-from config import args
-from config import load_config
-from shares.message_code import StandardMessageCode
-from shares.skate_enum import DebugLevel
-from shares.time_util import get_current_date_time
-from skate_thread.skate_process import ScheduledFixedProcessPool
+from skATE import shares
+from skATE.config import load_config, args
+from skATE.shares.message_code import StandardMessageCode
+from skATE.shares.skate_enum import DebugLevel
+from skATE.shares.time_util import get_current_date_time
+from skATE.skate_thread.skate_process import ScheduledFixedProcessPool
 
 # ============================================================
 # declare parameter
@@ -141,7 +140,7 @@ def init_env():
 
     # log file =====
     _log_formatter = logging.Formatter(static_info.LOG_FORMAT_STR)
-    _file_handler = logging.FileHandler('./AiOps.log', mode='w', encoding='utf-8')
+    _file_handler = logging.FileHandler('AiOps.log', mode='w', encoding='utf-8')
     _file_handler.setFormatter(_log_formatter)
     logger.addHandler(_file_handler)
 

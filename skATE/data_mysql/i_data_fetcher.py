@@ -6,7 +6,7 @@ import pandas as pd
 from pandas import DataFrame
 from sqlalchemy.engine import Engine
 
-from shares.message_code import StandardMessageCode
+from skATE.shares.message_code import StandardMessageCode
 
 
 class IDataFetcher:

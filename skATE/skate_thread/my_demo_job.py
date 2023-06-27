@@ -2,10 +2,10 @@ import os
 import time
 from multiprocessing import Lock
 
-from shares.message_code import StandardMessageCode
-from shares.skate_enum import DebugLevel
-from shares.time_util import get_current_date_time
-from skate_thread.skate_job import AbstractSkateJob
+from skATE.shares.message_code import StandardMessageCode
+from skATE.shares.skate_enum import DebugLevel
+from skATE.shares.time_util import get_current_date_time
+from skATE.skate_thread.skate_job import AbstractSkateJob
 
 
 class Peppa(AbstractSkateJob):

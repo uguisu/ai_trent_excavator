@@ -4,9 +4,9 @@ import logging
 import time
 import unittest
 
-import static_info
-from skate_thread.skate_job import AbstractSkateJob
-from skate_thread.skate_process import ScheduledFixedProcessPool
+from skATE import static_info
+from skATE.skate_thread.skate_job import AbstractSkateJob
+from skATE.skate_thread.skate_process import ScheduledFixedProcessPool
 
 # logger
 logger = logging.getLogger('skATE')
