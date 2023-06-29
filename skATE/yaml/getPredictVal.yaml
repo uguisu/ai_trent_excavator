@@ -1,0 +1,30 @@
+Get predict value by process id
+---
+tags:
+  - Base feature
+parameters:
+  - name: "process_id"
+    in: "path"
+    required: true
+    type: "string"
+    description: "process id. This id is the return value of the 'Declare algorithm service' function"
+responses:
+  200:
+    description: predicted value
+    schema:
+      $ref: '#/definitions/RecommendRsp'
+    examples:
+      rtn: {'body': {'predicted value'}, 'is_success': true, 'msg': null}
+definitions:
+  RecommendRsp:
+    type: object
+    properties:
+      body:
+        type: object
+        description: return object
+      is_success:
+        type: boolean
+        description: return whether the API call was successful
+      msg:
+        type: string
+        description: return message

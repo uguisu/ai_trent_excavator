@@ -2,16 +2,19 @@
 # author xin.he
 import logging
 
-import shares
-from shares.message_code import StandardMessageCode
+from skATE import shares
+from skATE.config import load_config, args
+from skATE.shares.message_code import StandardMessageCode
+from skATE.shares.skate_enum import DebugLevel
+from skATE.shares.time_util import get_current_date_time
+from skATE.skate_thread.skate_process import ScheduledFixedProcessPool
+
 # ============================================================
 # declare parameter
 # ============================================================
-from config import args
-from config import load_config
-
 # database connection
 db_connection = None
+process_pool: ScheduledFixedProcessPool = None
 
 # logger
 logger = logging.getLogger('skATE')
@@ -33,12 +36,104 @@ shares.make_sure_packages(config_info_entity)
 import os
 from cheroot.wsgi import PathInfoDispatcher, Server
 from flask import Flask
+from flasgger import Swagger, swag_from
 
+from skATE.shares.api_interfaces import BaseRsp
 import static_info
 
 # declare application object
 skate_app = Flask(__name__)
 skate_app.config['SECRET_KEY'] = os.urandom(24)
+skate_app.config['SWAGGER'] = {
+    'title': 'AI Trent Excavator (skate)',
+    'uiversion': 3,
+    'version': f'{static_info.__version__}',
+    'description': 'AI Trent Excavator for Apache Skywalking.',
+    'termsOfService': 'https://github.com/uguisu/ai_trent_excavator'
+}
+# swagger
+Swagger(skate_app)
+
+
+@skate_app.route('/serviceList', methods=['GET'])
+def get_service_list():
+    """
+    get service list
+    """
+    return {
+        "services": [1, 2, 3]
+    }
+
+
+@skate_app.route('/api/1/declareService/<string:al_id>', methods=['GET'])
+@swag_from('yaml/declareService.yaml')
+def declare_service(al_id):
+    """
+    declare algorithm service
+
+    :param al_id: algorithm id
+
+    :return: real process id, if success. This id should be used as key word for further prediction
+    """
+
+    global logger
+
+    method_name = 'declare_service'
+    logger.info(StandardMessageCode.I_100_9000_200012.get_formatted_msg(method_name=method_name))
+
+    # get real class
+    from algorithm.algorithm_map import algorithm_map
+    al_class = algorithm_map.get(al_id)
+
+    if al_class is None:
+        # target algorithm do not exist
+        logger.info(StandardMessageCode.I_100_9000_200013.get_formatted_msg(method_name=method_name))
+        return StandardMessageCode.W_100_9000_100004.get_formatted_msg(algorithm_id=al_id)
+
+    # get name
+    _process_id = f'{al_id}-{get_current_date_time()}'
+    # get instance
+    exec(f'from {al_class.package_name} import {al_class.class_name}')
+    _process_obj = eval(f'{al_class.class_name}(logger, {config_info_entity.sk_log_level}, "{_process_id}")')
+    process_pool.add_job(_process_obj)
+
+    # log
+    if config_info_entity.sk_log_level >= DebugLevel.LEVEL_2.value:
+        logger.info(StandardMessageCode.I_100_9000_200007.get_formatted_msg(
+            program_name='main',
+            pp_id=os.getppid(),
+            l_id=os.getpid(),
+        ))
+
+    logger.info(StandardMessageCode.I_100_9000_200013.get_formatted_msg(method_name=method_name))
+
+    rtn = BaseRsp(_process_id, True, None).to_dict()
+
+    return rtn
+
+
+@skate_app.route('/api/1/getPredictVal/<string:process_id>', methods=['GET'])
+@swag_from('yaml/getPredictVal.yaml')
+def get_predict_val(process_id):
+    """
+    get predict value by process id
+
+    :param process_id: process id. This id is the return value of the declare_service() function
+
+    :return: predicted value
+    """
+    global logger
+
+    method_name = 'get_val'
+    logger.info(StandardMessageCode.I_100_9000_200012.get_formatted_msg(method_name=method_name))
+
+    _tmp_p = process_pool.get_process_by_name(process_id)
+
+    logger.info(StandardMessageCode.I_100_9000_200013.get_formatted_msg(method_name=method_name))
+
+    rtn = BaseRsp(_tmp_p.predict('from get val'), True, None).to_dict()
+
+    return rtn
 
 
 def init_env():
@@ -46,11 +141,11 @@ def init_env():
     init environment
     """
 
-    global config_info_entity, logger, db_connection
+    global config_info_entity, logger, db_connection, process_pool
 
     # log file =====
     _log_formatter = logging.Formatter(static_info.LOG_FORMAT_STR)
-    _file_handler = logging.FileHandler('./AiOps.log', mode='w', encoding='utf-8')
+    _file_handler = logging.FileHandler('AiOps.log', mode='w', encoding='utf-8')
     _file_handler.setFormatter(_log_formatter)
     logger.addHandler(_file_handler)
 
@@ -96,6 +191,10 @@ def init_env():
         # setup flag
         static_info.DATA_SOURCE_FLG = static_info.DataSourceEnum.MySQL
 
+    # open process pool
+    # TODO move pool_size to config file
+    process_pool = ScheduledFixedProcessPool(logger, pool_size=10)
+
     # Database connected
     logger.info(StandardMessageCode.I_100_9000_200002.get_formatted_msg())
 
@@ -105,7 +204,7 @@ def release_env():
     release environment
     """
 
-    global db_connection
+    global db_connection, process_pool
 
     try:
         if static_info.DATA_SOURCE_FLG is static_info.DataSourceEnum.MySQL:
@@ -117,6 +216,11 @@ def release_env():
     except Exception:
         # Exception occurs while closing database connection
         logger.warning(StandardMessageCode.W_100_9000_100001.get_formatted_msg())
+
+    # release process_pool
+    if process_pool is not None and process_pool.job_amount >= 0:
+        _p = process_pool.stop_all_process()
+        del process_pool
 
     # Database disconnected
     logger.info(StandardMessageCode.I_100_9000_200003.get_formatted_msg())

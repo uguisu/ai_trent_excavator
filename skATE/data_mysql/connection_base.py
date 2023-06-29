@@ -4,7 +4,7 @@ import traceback
 
 from sqlalchemy import create_engine
 
-from config import ConfigInfo
+from skATE.config import ConfigInfo
 
 
 class MySQLConnector:
@@ -40,7 +40,7 @@ class MySQLConnector:
             # log error
             if self._logging is not None:
                 self._logging.error(traceback.format_exc())
-            from shares.message_code import StandardMessageCode
+            from skATE.shares.message_code import StandardMessageCode
             # database connection failed
             raise RuntimeError(StandardMessageCode.E_100_9000_000001.get_formatted_msg(db='MySQL'))
 

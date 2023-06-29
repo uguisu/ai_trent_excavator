@@ -3,9 +3,9 @@
 import configparser
 import os
 
-from config.config_info_entity import ConfigInfo
-from shares.message_code import StandardMessageCode
-from static_info import CONFIG_FILE_NAME
+from skATE.config.config_info_entity import ConfigInfo
+from skATE.shares.message_code import StandardMessageCode
+from skATE.static_info import CONFIG_FILE_NAME
 
 
 def load_config_file() -> ConfigInfo:
@@ -80,6 +80,9 @@ def override_config_via_cli(args, conf_info: ConfigInfo) -> ConfigInfo:
         conf_info.es_username = args.esUsername
     if args.esPassword is not None:
         conf_info.es_password = args.esPassword
+
+    if args.skLogLevel is not None:
+        conf_info.sk_log_level = args.skLogLevel
 
     return conf_info
 

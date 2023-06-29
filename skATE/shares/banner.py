@@ -1,7 +1,7 @@
 # coding=utf-8
 # author xin.he
 
-from static_info import __version__
+from skATE.static_info import __version__
 
 logo = f"""\033[92m
 -------------------------------------------------------------------------------
