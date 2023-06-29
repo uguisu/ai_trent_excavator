@@ -74,6 +74,12 @@ def declare_argparse():
                         default=None,
                         help='Elasticsearch Password')
 
+    parser.add_argument('--skLogLevel',
+                        action='store',
+                        dest='skLogLevel',
+                        default=None,
+                        help='Log level')
+
     return parser
 
 

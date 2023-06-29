@@ -1,6 +1,6 @@
 # coding=utf-8
 # author xin.he
-from config import ConfigInfo
+from skATE.config import ConfigInfo
 
 # all required packages
 REQUIRED_PACKAGES = [
@@ -9,10 +9,15 @@ REQUIRED_PACKAGES = [
     # web server
     'Flask==2.2.3',
     'cheroot==9.0.0',
+    'flasgger==0.9.7.1',
     # algorithm
     'scikit-learn==1.2.2',
+    # data model
+    'SQLAlchemy==2.0.15',
+    'pandas==2.0.2',
     # mysql
     'PyMySQL==1.0.3',
+    'cryptography==40.0.2',
     # Elasticsearch
     'elasticsearch==8.7.0'
 ]

@@ -1,0 +1,30 @@
+Declare algorithm service
+---
+tags:
+  - Base feature
+parameters:
+  - name: "al_id"
+    in: "path"
+    required: true
+    type: "string"
+    description: "algorithm id"
+responses:
+  200:
+    description: real process id, if success. This id should be used as key word for further prediction
+    schema:
+      $ref: '#/definitions/RecommendRsp'
+    examples:
+      rtn: {'body': null, 'is_success': true, 'msg': 'DEMO-1-PROCESS-ID'}
+definitions:
+  RecommendRsp:
+    type: object
+    properties:
+      body:
+        type: object
+        description: return object
+      is_success:
+        type: boolean
+        description: return whether the API call was successful
+      msg:
+        type: string
+        description: return message

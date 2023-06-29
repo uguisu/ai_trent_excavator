@@ -29,6 +29,10 @@ python ./main.py \
     --isAutoInstallPackage=True
 ```
 
+skATE also support [Swagger](https://swagger.io/) document:
+- statr service
+- use your browser and visit: http://127.0.0.1:7821/apidocs
+
 ## TODO
 - [x] ES connection
 - [ ] Software version comparison table
