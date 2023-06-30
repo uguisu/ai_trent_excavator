@@ -2,7 +2,7 @@
 # author xin.he
 import traceback
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 
 from skATE.config import ConfigInfo
 
@@ -36,6 +36,10 @@ class MySQLConnector:
                                     max_overflow=0,
                                     pool_recycle=5*60,
                                     isolation_level="READ COMMITTED")
+
+            # execute a dummy sql to verify connection
+            con_rtn.connect().execute(text('SELECT 1+1 FROM DUAL'))
+
         except:
             # log error
             if self._logging is not None:
