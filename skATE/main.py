@@ -34,12 +34,14 @@ shares.make_sure_packages(config_info_entity)
 # NOTICE: DO NOT MOVE FOLLOWING 'IMPORT' CODE TO THE TOP
 # ============================================================
 import os
+import static_info
+import numpy as np
+
 from cheroot.wsgi import PathInfoDispatcher, Server
-from flask import Flask
+from flask import Flask, json, request
 from flasgger import Swagger, swag_from
 
 from skATE.shares.api_interfaces import BaseRsp
-import static_info
 
 # declare application object
 skate_app = Flask(__name__)
@@ -76,7 +78,7 @@ def declare_service(al_id):
     :return: real process id, if success. This id should be used as key word for further prediction
     """
 
-    global logger
+    global logger, db_connection, static_info
 
     method_name = 'declare_service'
     logger.info(StandardMessageCode.I_100_9000_200012.get_formatted_msg(method_name=method_name))
@@ -90,11 +92,18 @@ def declare_service(al_id):
         logger.info(StandardMessageCode.I_100_9000_200013.get_formatted_msg(method_name=method_name))
         return StandardMessageCode.W_100_9000_100004.get_formatted_msg(algorithm_id=al_id)
 
+
+    # TODO mete data for algorithm class
     # get name
     _process_id = f'{al_id}-{get_current_date_time()}'
     # get instance
     exec(f'from {al_class.package_name} import {al_class.class_name}')
-    _process_obj = eval(f'{al_class.class_name}(logger, {config_info_entity.sk_log_level}, "{_process_id}")')
+    # _process_obj = eval(f'{al_class.class_name}(logger, {config_info_entity.sk_log_level}, "{_process_id}")')
+    _process_obj = eval(f'{al_class.class_name}(logger, '
+                        f'{config_info_entity.sk_log_level}, '
+                        f'db_connection, '
+                        f'static_info.DATA_SOURCE_FLG, '
+                        f'"{_process_id}")')
     process_pool.add_job(_process_obj)
 
     # log
@@ -112,7 +121,7 @@ def declare_service(al_id):
     return rtn
 
 
-@skate_app.route('/api/1/getPredictVal/<string:process_id>', methods=['GET'])
+@skate_app.route('/api/1/getPredictVal/<string:process_id>', methods=['POST'])
 @swag_from('yaml/getPredictVal.yaml')
 def get_predict_val(process_id):
     """
@@ -127,11 +136,21 @@ def get_predict_val(process_id):
     method_name = 'get_val'
     logger.info(StandardMessageCode.I_100_9000_200012.get_formatted_msg(method_name=method_name))
 
+    # parse input data
+    in_data = json.loads(request.data).get('data')
+    if in_data is None:
+        # TODO
+        return BaseRsp(None, False, None).to_dict()
+    else:
+        # TODO
+        logger.info(f'input data is: {in_data[:3]}')
+
     _tmp_p = process_pool.get_process_by_name(process_id)
 
     logger.info(StandardMessageCode.I_100_9000_200013.get_formatted_msg(method_name=method_name))
 
-    rtn = BaseRsp(_tmp_p.predict('from get val'), True, None).to_dict()
+    in_data = np.array(in_data).reshape(-1, 1)
+    rtn = BaseRsp(_tmp_p.predict(in_data), True, None).to_dict()
 
     return rtn
 

@@ -26,10 +26,10 @@ class AbstractSkateJob:
         # sync trained model
         self._queue = Queue()
 
-        # process
-        self._process = Process(target=self.execute_job, args=(self._queue, ))
+        # # process
+        # self._process = Process(target=self.execute_job, args=(self._queue, ))
 
-    def execute_job(self, q):
+    def execute_job(self, q, meta_data):
         """
         daemon job
 
@@ -37,17 +37,18 @@ class AbstractSkateJob:
         """
         while not self.cancel_flg:
             # call train function
-            self.train(q)
+            self.train(q, meta_data)
             # sleep
             time.sleep(self._interval_second)
 
-    def train(self, q):
+    def train(self, q, meta_data):
         """
         train
 
         this method should be overwritten before execute
 
         :param q: queue object(self._queue)
+        :param meta_data: meta data
         """
         raise NotImplementedError()
 
