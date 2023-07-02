@@ -12,11 +12,11 @@ responses:
   200:
     description: real process id, if success. This id should be used as key word for further prediction
     schema:
-      $ref: '#/definitions/RecommendRsp'
+      $ref: '#/definitions/BaseRsp'
     examples:
       rtn: {'body': null, 'is_success': true, 'msg': 'DEMO-1-PROCESS-ID'}
 definitions:
-  RecommendRsp:
+  BaseRsp:
     type: object
     properties:
       body:
