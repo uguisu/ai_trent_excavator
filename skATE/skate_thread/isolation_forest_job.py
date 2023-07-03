@@ -95,37 +95,17 @@ class IsolationForestJob(AbstractSkateJob):
         from skATE import static_info
         if meta_data.get('data_source_flg').value == static_info.DataSourceEnum.MySQL.value:
             # mysql
-            fetched_rows = meta_data.get('db_connection').connect().execute(text(
-                f'''
-                SELECT
-                    segm.latency
-                FROM
-                    service_traffic srv_tra
-                LEFT JOIN instance_traffic ins_tra
-                    ON srv_tra.service_id = ins_tra.service_id
-                LEFT JOIN segment segm
-                    ON ins_tra.id = segm.service_instance_id
-                WHERE
-                    srv_tra.name = '{trace_name}'
-                    AND srv_tra.id = '{trace_id}'
-                ORDER BY
-                    segm.start_time,
-                    segm.time_bucket
-                LIMIT {limitation}
-                '''
-            ))
-
-            _tmp_l = []
-            for _r in fetched_rows:
-                _tmp_l.extend(_r)
+            from skATE.data_mysql.segment_latency_fetcher import SegmentLatencyFetcher
+            fetcher = SegmentLatencyFetcher(meta_data.get('db_connection'),
+                                            trace_name,
+                                            trace_id,
+                                            limitation)
+            # to avoid warning:
+            # UserWarning: X does not have valid feature names, but <sk-learn class> was fitted with feature names
+            fetched_rows = fetcher.fetch().values
 
             # GC
-            del fetched_rows
-
-            fetched_rows = np.array(_tmp_l).reshape(-1, 1)
-
-            # GC
-            del _tmp_l
+            del fetcher
         else:
             # TOD other database
             raise NotImplementedError()
