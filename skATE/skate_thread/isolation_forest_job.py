@@ -71,6 +71,11 @@ class IsolationForestJob(AbstractSkateJob):
         :param meta_data: meta data
         """
 
+        method_name = 'train'
+        # log
+        if self._log_level >= DebugLevel.LEVEL_1.value:
+            self._logger.info(StandardMessageCode.I_100_9000_200012.get_formatted_msg(method_name=method_name))
+
         # log
         if self._log_level >= DebugLevel.LEVEL_2.value:
             self._logger.info(StandardMessageCode.I_100_9000_200007.get_formatted_msg(
@@ -78,10 +83,6 @@ class IsolationForestJob(AbstractSkateJob):
                 pp_id=os.getppid(),
                 l_id=os.getpid(),
             ))
-
-        # log
-        if self._log_level >= DebugLevel.LEVEL_1.value:
-            self._logger.info(f'train start')
 
         ##########################
         # FOR AI MODEL
@@ -111,7 +112,6 @@ class IsolationForestJob(AbstractSkateJob):
             # TOD other database
             raise NotImplementedError()
 
-
         # TODO add some meta data for model class
         # algorithm model class
         _model_class = AlIsolationForest()
@@ -135,7 +135,7 @@ class IsolationForestJob(AbstractSkateJob):
 
         # log
         if self._log_level >= DebugLevel.LEVEL_1.value:
-            self._logger.info(f'train finish')
+            self._logger.info(StandardMessageCode.I_100_9000_200013.get_formatted_msg(method_name=method_name))
 
     def predict(self, in_data):
         """
@@ -144,7 +144,10 @@ class IsolationForestJob(AbstractSkateJob):
         :param in_data: input data
         """
 
-        rtn = []
+        method_name = 'predict'
+        # log
+        if self._log_level >= DebugLevel.LEVEL_1.value:
+            self._logger.info(StandardMessageCode.I_100_9000_200012.get_formatted_msg(method_name=method_name))
 
         # log
         if self._log_level >= DebugLevel.LEVEL_2.value:
@@ -154,17 +157,20 @@ class IsolationForestJob(AbstractSkateJob):
                 l_id=os.getpid(),
             ))
 
+        rtn = []
+
         # verify
         if in_data is None:
+            # log
+            if self._log_level >= DebugLevel.LEVEL_1.value:
+                self._logger.info(StandardMessageCode.I_100_9000_200013.get_formatted_msg(method_name=method_name))
             # input nothing return nothing
             return rtn
 
-        # log
-        if self._log_level >= DebugLevel.LEVEL_1.value:
-            self._logger.info(f'predicting.....')
-
+        # lock
         self._lock.acquire()
         try:
+            # there is and only one model in queue
             if self._queue.qsize() == 1:
                 # remove old model
                 del self._model
@@ -174,11 +180,9 @@ class IsolationForestJob(AbstractSkateJob):
                 raise RuntimeError()
 
             if self._model is None:
-
                 # log
                 if self._log_level >= DebugLevel.LEVEL_1.value:
-                    self._logger.info(f'model is none')
-
+                    self._logger.warning(StandardMessageCode.W_100_9000_100005.get_formatted_msg())
                 # model has not been trained yet
                 return []
 
@@ -192,6 +196,6 @@ class IsolationForestJob(AbstractSkateJob):
 
         # log
         if self._log_level >= DebugLevel.LEVEL_1.value:
-            self._logger.info(f'predicting..... done')
+            self._logger.info(StandardMessageCode.I_100_9000_200013.get_formatted_msg(method_name=method_name))
 
         return rtn.tolist()
