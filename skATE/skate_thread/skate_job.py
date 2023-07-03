@@ -1,7 +1,7 @@
 # coding=utf-8
 # author xin.he
 import time
-from multiprocessing import Process, Queue
+from multiprocessing import Queue
 
 
 class AbstractSkateJob:
@@ -26,14 +26,18 @@ class AbstractSkateJob:
         # sync trained model
         self._queue = Queue()
 
-        # # process
-        # self._process = Process(target=self.execute_job, args=(self._queue, ))
+        # process should be started in subclass.
+        # refer following example
+        # self._process = Process(target=self.execute_job, args=(self._queue, xxxxxxx))
 
-    def execute_job(self, q, meta_data):
+    def execute_job(self,
+                    q: Queue,
+                    meta_data):
         """
         daemon job
 
         :param q: queue object(self._queue)
+        :param meta_data: meta data
         """
         while not self.cancel_flg:
             # call train function
@@ -41,7 +45,9 @@ class AbstractSkateJob:
             # sleep
             time.sleep(self._interval_second)
 
-    def train(self, q, meta_data):
+    def train(self,
+              q: Queue,
+              meta_data):
         """
         train
 
