@@ -1,10 +1,7 @@
 # coding=utf-8
 # author xin.he
 import os
-from multiprocessing import Lock, Process
-
-import numpy as np
-from sqlalchemy import text
+from multiprocessing import Lock, Process, Queue
 
 from skATE.algorithm.Al_IsolationForest import AlIsolationForest
 from skATE.shares.message_code import StandardMessageCode
@@ -64,10 +61,14 @@ class IsolationForestJob(AbstractSkateJob):
         # process
         self._process = Process(target=self.execute_job, args=(self._queue, meta_data, ))
 
-
-    def train(self, q, meta_data):
+    def train(self,
+              q: Queue,
+              meta_data):
         """
         train
+
+        :param q: queue object(self._queue)
+        :param meta_data: meta data
         """
 
         # log
@@ -122,7 +123,8 @@ class IsolationForestJob(AbstractSkateJob):
         try:
             # remove all older model
             while not q.empty():
-                q.get()
+                _to_del = q.get()
+                del _to_del
 
             q.put(_model_class.model)
 
@@ -142,10 +144,6 @@ class IsolationForestJob(AbstractSkateJob):
         :param in_data: input data
         """
 
-        # log
-        if self._log_level >= DebugLevel.LEVEL_2.value:
-            self._logger.info(f'get input data = {in_data}')
-
         rtn = []
 
         # log
@@ -156,6 +154,7 @@ class IsolationForestJob(AbstractSkateJob):
                 l_id=os.getpid(),
             ))
 
+        # verify
         if in_data is None:
             # input nothing return nothing
             return rtn
@@ -167,6 +166,9 @@ class IsolationForestJob(AbstractSkateJob):
         self._lock.acquire()
         try:
             if self._queue.qsize() == 1:
+                # remove old model
+                del self._model
+                # pop-up model object from Queue
                 self._model = self._queue.get()
             elif self._queue.qsize() > 1:
                 raise RuntimeError()
