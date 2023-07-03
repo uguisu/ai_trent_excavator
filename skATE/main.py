@@ -143,7 +143,7 @@ def get_predict_val(process_id):
         return BaseRsp(None, False, None).to_dict()
     else:
         # TODO
-        logger.info(f'input data is: {in_data[:3]}')
+        logger.info(f'input data top 3 are: {in_data[:3]}')
 
     _tmp_p = process_pool.get_process_by_name(process_id)
 
