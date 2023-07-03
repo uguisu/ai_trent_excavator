@@ -66,23 +66,24 @@ class AlIsolationForest(BaseAlgorithm):
 
         self.model.fit(self.data)
 
-    def predict(self, **kwargs):
-        """
-        predict
-
-        :param kwargs: data for prediction
-
-        """
-
-        from skATE.shares.message_code import StandardMessageCode
-
-        # verify
-        if kwargs is None:
-            # invalid parameter
-            raise ValueError(StandardMessageCode.E_100_9000_000004.get_formatted_msg(
-                parameter_name='data for prediction'))
-        if self.model is None:
-            # train model before predict
-            raise AttributeError(StandardMessageCode.E_100_9000_000003.get_formatted_msg())
-
-        return self.model.predict(kwargs['data'])
+    # TODO useless?
+    # def predict(self, **kwargs):
+    #     """
+    #     predict
+    #
+    #     :param kwargs: data for prediction
+    #
+    #     """
+    #
+    #     from skATE.shares.message_code import StandardMessageCode
+    #
+    #     # verify
+    #     if kwargs is None:
+    #         # invalid parameter
+    #         raise ValueError(StandardMessageCode.E_100_9000_000004.get_formatted_msg(
+    #             parameter_name='data for prediction'))
+    #     if self.model is None:
+    #         # train model before predict
+    #         raise AttributeError(StandardMessageCode.E_100_9000_000003.get_formatted_msg())
+    #
+    #     return self.model.predict(kwargs['data'])
