@@ -7,6 +7,8 @@ class AlIsolationForest(BaseAlgorithm):
     """
     IsolationForest
 
+    Result: -1: abnormal; 1 normal;
+
     Refer: https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.IsolationForest.html
     """
 
