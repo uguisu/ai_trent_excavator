@@ -67,6 +67,38 @@ def get_service_list():
     }
 
 
+@skate_app.route('/api/1/getServiceParameter/<string:al_id>', methods=['GET'])
+@swag_from('yaml/getServiceParameter.yaml')
+def get_service_parameter(al_id):
+    """
+    get algorithm service parameter
+
+    :param al_id: algorithm id
+
+    :return: algorithm service parameter as metadata map
+    """
+
+    global logger
+
+    method_name = 'get_service_parameter'
+    logger.info(StandardMessageCode.I_100_9000_200012.get_formatted_msg(method_name=method_name))
+
+    # get real class
+    from algorithm.algorithm_map import algorithm_map
+    al_class = algorithm_map.get(al_id).get('al')
+
+    # get instance
+    exec(f'from {al_class.package_name} import {al_class.class_name}')
+    # get metadata
+    wrk_metadata = eval(f'{al_class.class_name}.metadata()')
+
+    rtn = BaseRsp(wrk_metadata, True, None).to_dict()
+
+    logger.info(StandardMessageCode.I_100_9000_200013.get_formatted_msg(method_name=method_name))
+
+    return rtn
+
+
 @skate_app.route('/api/1/declareService/<string:al_id>', methods=['GET'])
 @swag_from('yaml/declareService.yaml')
 def declare_service(al_id):
@@ -85,7 +117,7 @@ def declare_service(al_id):
 
     # get real class
     from algorithm.algorithm_map import algorithm_map
-    al_class = algorithm_map.get(al_id)
+    al_class = algorithm_map.get(al_id).get('job')
 
     if al_class is None:
         # target algorithm do not exist

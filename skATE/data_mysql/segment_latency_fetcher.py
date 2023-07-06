@@ -50,3 +50,14 @@ class SegmentLatencyFetcher(IDataFetcher):
             segm.time_bucket
         LIMIT {self._limitation}
         '''
+
+    @staticmethod
+    def metadata() -> dict:
+        """
+        get metadata
+        """
+        return {
+            'trace_name': '',
+            'trace_id': '',
+            'limitation': 2000,
+        }

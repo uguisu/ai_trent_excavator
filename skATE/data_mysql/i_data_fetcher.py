@@ -48,3 +48,12 @@ class IDataFetcher:
         """
 
         raise NotImplementedError(StandardMessageCode.E_100_9000_000005.get_formatted_msg(method_name='declare_sql'))
+
+    @staticmethod
+    def metadata() -> dict:
+        """
+        get metadata
+
+        this method should be overwritten before execute
+        """
+        raise NotImplementedError()

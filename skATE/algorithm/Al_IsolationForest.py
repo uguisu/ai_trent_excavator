@@ -89,3 +89,26 @@ class AlIsolationForest(BaseAlgorithm):
     #         raise AttributeError(StandardMessageCode.E_100_9000_000003.get_formatted_msg())
     #
     #     return self.model.predict(kwargs['data'])
+
+    @staticmethod
+    def metadata() -> dict:
+        """
+        show metadata
+        """
+        return {
+            'algorithm': {
+                'n_estimators': 100,
+                'contamination': float(0.1),
+                'max_features': float(1.0),
+                'n_jobs': 2,
+            },
+            'data_fetcher': AlIsolationForest.data_fetcher().metadata()
+        }
+
+    @staticmethod
+    def data_fetcher():
+        """
+        get data fetcher class
+        """
+        from skATE.data_mysql.segment_latency_fetcher import SegmentLatencyFetcher
+        return SegmentLatencyFetcher

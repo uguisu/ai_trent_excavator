@@ -31,5 +31,8 @@ class AlgorithmMetaInfo:
 
 # algorithm class meta info
 algorithm_map = {
-    'IsolationForest-001': AlgorithmMetaInfo('skate_thread.isolation_forest_job', 'IsolationForestJob'),
+    'IsolationForest-001': {
+        'job': AlgorithmMetaInfo('skate_thread.isolation_forest_job', 'IsolationForestJob'),
+        'al': AlgorithmMetaInfo('skATE.algorithm.Al_IsolationForest', 'AlIsolationForest'),
+    }
 }
