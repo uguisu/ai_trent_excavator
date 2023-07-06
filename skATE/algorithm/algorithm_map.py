@@ -1,5 +1,6 @@
 # coding=utf-8
 # author xin.he
+from skATE.shares.skate_enum import AlgorithmMetaDataMap
 
 
 class AlgorithmMetaInfo:
@@ -32,7 +33,9 @@ class AlgorithmMetaInfo:
 # algorithm class meta info
 algorithm_map = {
     'IsolationForest-001': {
-        'job': AlgorithmMetaInfo('skate_thread.isolation_forest_job', 'IsolationForestJob'),
-        'al': AlgorithmMetaInfo('skATE.algorithm.Al_IsolationForest', 'AlIsolationForest'),
+        AlgorithmMetaDataMap.JOB_CLS.value:
+            AlgorithmMetaInfo('skate_thread.isolation_forest_job', 'IsolationForestJob'),
+        AlgorithmMetaDataMap.ALGORITHM_CLS.value:
+            AlgorithmMetaInfo('skATE.algorithm.Al_IsolationForest', 'AlIsolationForest'),
     }
 }

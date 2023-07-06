@@ -5,7 +5,7 @@ import logging
 from skATE import shares
 from skATE.config import load_config, args
 from skATE.shares.message_code import StandardMessageCode
-from skATE.shares.skate_enum import DebugLevel
+from skATE.shares.skate_enum import DebugLevel, AlgorithmMetaDataMap
 from skATE.shares.time_util import get_current_date_time
 from skATE.skate_thread.skate_process import ScheduledFixedProcessPool
 
@@ -85,7 +85,7 @@ def get_service_parameter(al_id):
 
     # get real class
     from algorithm.algorithm_map import algorithm_map
-    al_class = algorithm_map.get(al_id).get('al')
+    al_class = algorithm_map.get(al_id).get(AlgorithmMetaDataMap.ALGORITHM_CLS.value)
 
     # get instance
     exec(f'from {al_class.package_name} import {al_class.class_name}')
@@ -117,7 +117,7 @@ def declare_service(al_id):
 
     # get real class
     from algorithm.algorithm_map import algorithm_map
-    al_class = algorithm_map.get(al_id).get('job')
+    al_class = algorithm_map.get(al_id).get(AlgorithmMetaDataMap.JOB_CLS.value)
 
     if al_class is None:
         # target algorithm do not exist

@@ -28,3 +28,14 @@ class DebugLevel(Enum):
     LEVEL_2 = 2
     # all debug info will be output
     LEVEL_3 = 3
+
+
+@unique
+class AlgorithmMetaDataMap(Enum):
+    """
+    Algorithm metadata map key name
+    """
+    # job class
+    JOB_CLS = 'job'
+    # algorithm class
+    ALGORITHM_CLS = 'al'
