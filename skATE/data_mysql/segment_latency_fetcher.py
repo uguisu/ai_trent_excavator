@@ -46,8 +46,8 @@ class SegmentLatencyFetcher(IDataFetcher):
             srv_tra.name = '{self._trace_name}'
             AND srv_tra.id = '{self._trace_id}'
         ORDER BY
-            segm.start_time,
-            segm.time_bucket
+            segm.start_time DESC,
+            segm.time_bucket DESC
         LIMIT {self._limitation}
         '''
 

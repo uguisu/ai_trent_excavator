@@ -3,6 +3,8 @@
 import os
 from multiprocessing import Lock, Process, Queue
 
+import numpy as np
+
 from skATE.algorithm.Al_IsolationForest import AlIsolationForest
 from skATE.shares.message_code import StandardMessageCode
 from skATE.shares.skate_enum import DebugLevel
@@ -105,6 +107,8 @@ class IsolationForestJob(AbstractSkateJob):
             # to avoid warning:
             # UserWarning: X does not have valid feature names, but <sk-learn class> was fitted with feature names
             fetched_rows = fetcher.fetch().values
+            # revert
+            fetched_rows = np.flip(fetched_rows)
 
             # GC
             del fetcher
