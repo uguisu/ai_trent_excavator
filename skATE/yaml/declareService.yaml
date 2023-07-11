@@ -8,13 +8,19 @@ parameters:
     required: true
     type: "string"
     description: "algorithm id"
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: '#definitions/MetaDataBody'
+    description: "Data object"
 responses:
   200:
     description: real process id, if success. This id should be used as key word for further prediction
     schema:
       $ref: '#/definitions/BaseRsp'
     examples:
-      rtn: {'body': null, 'is_success': true, 'msg': 'DEMO-1-PROCESS-ID'}
+      rtn: {'body': 'DEMO-1-PROCESS-ID', 'is_success': true, 'msg': null}
 definitions:
   BaseRsp:
     type: object
@@ -28,3 +34,12 @@ definitions:
       msg:
         type: string
         description: return message
+  MetaDataBody:
+    type: object
+    properties:
+      algorithm:
+        type: object
+        description: algorithm meta data
+      data_fetcher:
+        type: object
+        description: data_fetcher meta data

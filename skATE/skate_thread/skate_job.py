@@ -3,6 +3,8 @@
 import time
 from multiprocessing import Queue
 
+from skATE.static_info import DataSourceEnum
+
 
 class AbstractSkateJob:
     """
@@ -32,29 +34,29 @@ class AbstractSkateJob:
 
     def execute_job(self,
                     q: Queue,
-                    meta_data):
+                    data_wrapper):
         """
         daemon job
 
         :param q: queue object(self._queue)
-        :param meta_data: meta data
+        :param data_wrapper: data wrapper
         """
         while not self.cancel_flg:
             # call train function
-            self.train(q, meta_data)
+            self.train(q, data_wrapper)
             # sleep
             time.sleep(self._interval_second)
 
     def train(self,
               q: Queue,
-              meta_data):
+              data_wrapper):
         """
         train
 
         this method should be overwritten before execute
 
         :param q: queue object(self._queue)
-        :param meta_data: meta data
+        :param data_wrapper: data wrapper
         """
         raise NotImplementedError()
 
@@ -96,3 +98,34 @@ class AbstractSkateJob:
         process
         """
         return self._process
+
+
+class SkateJobTemplate1(AbstractSkateJob):
+    """
+    job template 1
+    """
+
+    def __init__(self,
+                 log,
+                 log_level: int,
+                 db_connection,
+                 data_source_flg: DataSourceEnum = DataSourceEnum.MySQL,
+                 name: str = '',
+                 interval_second: int = 15):
+        """
+        init
+
+        :param log: logger object
+        :param log_level: log level
+        :param db_connection: database connection
+        :param data_source_flg: data source type
+        :param name: job name
+        :param interval_second: interval second.
+        """
+
+        super().__init__(name, interval_second)
+
+        self._logger = log
+        self._log_level = log_level
+        self._db_connection = db_connection
+        self._data_source_flg = data_source_flg

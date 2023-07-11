@@ -7,12 +7,12 @@ import numpy as np
 
 from skATE.algorithm.Al_IsolationForest import AlIsolationForest
 from skATE.shares.message_code import StandardMessageCode
-from skATE.shares.skate_enum import DebugLevel
-from skATE.skate_thread.skate_job import AbstractSkateJob
+from skATE.shares.skate_enum import DebugLevel, AlgorithmMetaDataParameter
+from skATE.skate_thread.skate_job import SkateJobTemplate1
 from skATE.static_info import DataSourceEnum
 
 
-class IsolationForestJob(AbstractSkateJob):
+class IsolationForestJob(SkateJobTemplate1):
     """
     Job for isolation forest
     """
@@ -23,7 +23,8 @@ class IsolationForestJob(AbstractSkateJob):
                  db_connection,
                  data_source_flg: DataSourceEnum = DataSourceEnum.MySQL,
                  name: str = '',
-                 interval_second: int = 15):
+                 interval_second: int = 15,
+                 **kwargs):
         """
         init
 
@@ -33,19 +34,15 @@ class IsolationForestJob(AbstractSkateJob):
         :param data_source_flg: data source type
         :param name: job name
         :param interval_second: interval second.
+        :param kwargs: any other arguments
         """
 
-        super().__init__(name, interval_second)
-
-        self._logger = log
-        self._log_level = log_level
-        self._db_connection = db_connection
-        self._data_source_flg = data_source_flg
+        super().__init__(log, log_level, db_connection, data_source_flg, name, interval_second)
 
         # log
         if self._log_level >= DebugLevel.LEVEL_2.value:
             self._logger.info(StandardMessageCode.I_100_9000_200007.get_formatted_msg(
-                program_name='Peppa_init',
+                program_name='IsolationForestJob',
                 pp_id=os.getppid(),
                 l_id=os.getpid(),
             ))
@@ -55,22 +52,24 @@ class IsolationForestJob(AbstractSkateJob):
         # for sync model
         self._lock = Lock()
 
-        meta_data = {
+        # wrapper all data into a dict
+        data_wrapper = {
             'data_source_flg': self._data_source_flg,
             'db_connection': self._db_connection,
         }
+        data_wrapper.update(kwargs)
 
         # process
-        self._process = Process(target=self.execute_job, args=(self._queue, meta_data, ))
+        self._process = Process(target=self.execute_job, args=(self._queue, data_wrapper, ))
 
     def train(self,
               q: Queue,
-              meta_data):
+              data_wrapper):
         """
         train
 
         :param q: queue object(self._queue)
-        :param meta_data: meta data
+        :param data_wrapper: data wrapper
         """
 
         method_name = 'train'
@@ -90,20 +89,23 @@ class IsolationForestJob(AbstractSkateJob):
         # FOR AI MODEL
         ##########################
 
-        # TODO
-        trace_name = 'mall|happysk|'
-        trace_id = 'bWFsbHxoYXBweXNrfA==.2'
-        limitation = 2000
+        algorithm_dict = data_wrapper.get(AlgorithmMetaDataParameter.ALGORITHM.value)
+        data_fetcher_dict = data_wrapper.get(AlgorithmMetaDataParameter.DATA_FETCHER.value)
+
+        # log
+        if self._log_level >= DebugLevel.LEVEL_2.value:
+            self._logger.info(algorithm_dict)
+            self._logger.info(data_fetcher_dict)
 
         # fetch data
         from skATE import static_info
-        if meta_data.get('data_source_flg').value == static_info.DataSourceEnum.MySQL.value:
+        if data_wrapper.get('data_source_flg').value == static_info.DataSourceEnum.MySQL.value:
             # mysql
             from skATE.data_mysql.segment_latency_fetcher import SegmentLatencyFetcher
-            fetcher = SegmentLatencyFetcher(meta_data.get('db_connection'),
-                                            trace_name,
-                                            trace_id,
-                                            limitation)
+            fetcher = SegmentLatencyFetcher(data_wrapper.get('db_connection'),
+                                            data_fetcher_dict.get('trace_name'),
+                                            data_fetcher_dict.get('trace_id'),
+                                            data_fetcher_dict.get('limitation'))
             # to avoid warning:
             # UserWarning: X does not have valid feature names, but <sk-learn class> was fitted with feature names
             fetched_rows = fetcher.fetch().values
@@ -116,9 +118,13 @@ class IsolationForestJob(AbstractSkateJob):
             # TOD other database
             raise NotImplementedError()
 
-        # TODO add some meta data for model class
         # algorithm model class
-        _model_class = AlIsolationForest()
+        _model_class = AlIsolationForest(
+            n_estimators=algorithm_dict.get('n_estimators'),
+            contamination=algorithm_dict.get('contamination'),
+            max_features=algorithm_dict.get('max_features'),
+            n_jobs=algorithm_dict.get('n_jobs'),
+        )
         _model_class.data = fetched_rows
         _model_class.train()
 

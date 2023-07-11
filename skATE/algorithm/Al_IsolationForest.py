@@ -95,14 +95,15 @@ class AlIsolationForest(BaseAlgorithm):
         """
         show metadata
         """
+        from skATE.shares.skate_enum import AlgorithmMetaDataParameter
         return {
-            'algorithm': {
+            AlgorithmMetaDataParameter.ALGORITHM.value: {
                 'n_estimators': 100,
                 'contamination': float(0.1),
                 'max_features': float(1.0),
                 'n_jobs': 2,
             },
-            'data_fetcher': AlIsolationForest.data_fetcher().metadata()
+            AlgorithmMetaDataParameter.DATA_FETCHER.value: AlIsolationForest.data_fetcher().metadata()
         }
 
     @staticmethod

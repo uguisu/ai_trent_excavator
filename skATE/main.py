@@ -5,7 +5,7 @@ import logging
 from skATE import shares
 from skATE.config import load_config, args
 from skATE.shares.message_code import StandardMessageCode
-from skATE.shares.skate_enum import DebugLevel, AlgorithmMetaDataMap
+from skATE.shares.skate_enum import DebugLevel, AlgorithmMetaDataMap, AlgorithmMetaDataParameter
 from skATE.shares.time_util import get_current_date_time
 from skATE.skate_thread.skate_process import ScheduledFixedProcessPool
 
@@ -68,7 +68,8 @@ def get_service_list():
 
 
 @skate_app.route('/api/1/getServiceParameter/<string:al_id>', methods=['GET'])
-@swag_from('yaml/getServiceParameter.yaml')
+# TODO
+# @swag_from('yaml/getServiceParameter.yaml')
 def get_service_parameter(al_id):
     """
     get algorithm service parameter
@@ -99,7 +100,7 @@ def get_service_parameter(al_id):
     return rtn
 
 
-@skate_app.route('/api/1/declareService/<string:al_id>', methods=['GET'])
+@skate_app.route('/api/1/declareService/<string:al_id>', methods=['POST'])
 @swag_from('yaml/declareService.yaml')
 def declare_service(al_id):
     """
@@ -110,10 +111,33 @@ def declare_service(al_id):
     :return: real process id, if success. This id should be used as key word for further prediction
     """
 
-    global logger, db_connection, static_info
+    global logger, db_connection
 
     method_name = 'declare_service'
     logger.info(StandardMessageCode.I_100_9000_200012.get_formatted_msg(method_name=method_name))
+
+    # parse & verify input data
+    algorithm_param = json.loads(request.data).get(AlgorithmMetaDataParameter.ALGORITHM.value)
+    if algorithm_param is None:
+        # invalid parameter
+        logger.info(StandardMessageCode.I_100_9000_200013.get_formatted_msg(method_name=method_name))
+        return BaseRsp(None, False, StandardMessageCode.E_100_9000_000004.get_formatted_msg(
+            parameter_name=AlgorithmMetaDataParameter.ALGORITHM.value
+        )).to_dict()
+
+    data_fetcher_param = json.loads(request.data).get(AlgorithmMetaDataParameter.DATA_FETCHER.value)
+    if data_fetcher_param is None:
+        # invalid parameter
+        logger.info(StandardMessageCode.I_100_9000_200013.get_formatted_msg(method_name=method_name))
+        return BaseRsp(None, False, StandardMessageCode.E_100_9000_000004.get_formatted_msg(
+            parameter_name=AlgorithmMetaDataParameter.DATA_FETCHER.value
+        )).to_dict()
+
+    # verify done, merge meta data
+    data_wrapper = {
+        AlgorithmMetaDataParameter.ALGORITHM.value: algorithm_param,
+        AlgorithmMetaDataParameter.DATA_FETCHER.value: data_fetcher_param
+    }
 
     # get real class
     from algorithm.algorithm_map import algorithm_map
@@ -122,20 +146,20 @@ def declare_service(al_id):
     if al_class is None:
         # target algorithm do not exist
         logger.info(StandardMessageCode.I_100_9000_200013.get_formatted_msg(method_name=method_name))
-        return StandardMessageCode.W_100_9000_100004.get_formatted_msg(algorithm_id=al_id)
+        return BaseRsp(None, False, StandardMessageCode.W_100_9000_100004.get_formatted_msg(
+            algorithm_id=al_id
+        )).to_dict()
 
-
-    # TODO mete data for algorithm class
     # get name
     _process_id = f'{al_id}-{get_current_date_time()}'
     # get instance
     exec(f'from {al_class.package_name} import {al_class.class_name}')
-    # _process_obj = eval(f'{al_class.class_name}(logger, {config_info_entity.sk_log_level}, "{_process_id}")')
     _process_obj = eval(f'{al_class.class_name}(logger, '
                         f'{config_info_entity.sk_log_level}, '
                         f'db_connection, '
                         f'static_info.DATA_SOURCE_FLG, '
-                        f'"{_process_id}")')
+                        f'"{_process_id}", '
+                        f'**data_wrapper )')
     process_pool.add_job(_process_obj)
 
     # log

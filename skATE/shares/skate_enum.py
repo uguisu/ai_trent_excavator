@@ -39,3 +39,29 @@ class AlgorithmMetaDataMap(Enum):
     JOB_CLS = 'job'
     # algorithm class
     ALGORITHM_CLS = 'al'
+
+
+@unique
+class AlgorithmMetaDataParameter(Enum):
+    """
+    Algorithm metadata parameter key name
+
+    Example: the target json format should be:
+        {
+            'algorithm': {
+                'n_estimators': 100,
+                'contamination': float(0.1),
+                'max_features': float(1.0),
+                'n_jobs': 2,
+            },
+            'data_fetcher': {
+                'trace_name': '',
+                'trace_id': '',
+                'limitation': 2000,
+            }
+        }
+    """
+    # algorithm
+    ALGORITHM = 'algorithm'
+    # data fetcher
+    DATA_FETCHER = 'data_fetcher'
