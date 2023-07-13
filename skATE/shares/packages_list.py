@@ -22,6 +22,16 @@ REQUIRED_PACKAGES = [
     'elasticsearch==8.7.0'
 ]
 
+DNN_PACKAGES_CPU_ONLY = [
+    # pytorch
+    'torch==1.13.1+cpu',
+]
+
+DNN_PACKAGES_GPU = [
+    # pytorch
+    'torch==1.13.1+cu116',
+]
+
 
 def make_sure_packages(config_info_entity: ConfigInfo):
     """
