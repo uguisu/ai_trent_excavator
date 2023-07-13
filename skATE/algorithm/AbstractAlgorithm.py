@@ -75,3 +75,21 @@ class BaseAlgorithm:
         this method should be overwritten before execute
         """
         raise NotImplementedError()
+
+    @staticmethod
+    def metadata() -> dict:
+        """
+        get metadata
+
+        this method should be overwritten before execute
+        """
+        raise NotImplementedError()
+
+    @staticmethod
+    def data_fetcher():
+        """
+        declare related data fetcher class here
+
+        this method should be overwritten before execute
+        """
+        raise NotImplementedError()
