@@ -3,6 +3,7 @@
 import logging
 import time
 import unittest
+from multiprocessing import Process
 
 from skATE import static_info
 from skATE.skate_thread.skate_job import AbstractSkateJob
@@ -28,12 +29,16 @@ class MyTestSkateJob(AbstractSkateJob):
                  interval_second: int = 5):
         super().__init__(name, interval_second)
 
-    def train(self, q):
+        meta_data = None
+
+        # process
+        self._process = Process(target=self.execute_job, args=(self._queue, meta_data, ))
+
+    def train(self, q, meta_data):
         pass
 
     def predict(self, in_data):
         return in_data
-
 
 
 class TestSkateProcess001(unittest.TestCase):

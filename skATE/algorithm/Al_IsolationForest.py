@@ -7,6 +7,8 @@ class AlIsolationForest(BaseAlgorithm):
     """
     IsolationForest
 
+    Result: -1: abnormal; 1 normal;
+
     Refer: https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.IsolationForest.html
     """
 
@@ -66,23 +68,48 @@ class AlIsolationForest(BaseAlgorithm):
 
         self.model.fit(self.data)
 
-    def predict(self, **kwargs):
+    # TODO useless?
+    # def predict(self, **kwargs):
+    #     """
+    #     predict
+    #
+    #     :param kwargs: data for prediction
+    #
+    #     """
+    #
+    #     from skATE.shares.message_code import StandardMessageCode
+    #
+    #     # verify
+    #     if kwargs is None:
+    #         # invalid parameter
+    #         raise ValueError(StandardMessageCode.E_100_9000_000004.get_formatted_msg(
+    #             parameter_name='data for prediction'))
+    #     if self.model is None:
+    #         # train model before predict
+    #         raise AttributeError(StandardMessageCode.E_100_9000_000003.get_formatted_msg())
+    #
+    #     return self.model.predict(kwargs['data'])
+
+    @staticmethod
+    def metadata() -> dict:
         """
-        predict
-
-        :param kwargs: data for prediction
-
+        show metadata
         """
+        from skATE.shares.skate_enum import AlgorithmMetaDataParameter
+        return {
+            AlgorithmMetaDataParameter.ALGORITHM.value: {
+                'n_estimators': 100,
+                'contamination': float(0.1),
+                'max_features': float(1.0),
+                'n_jobs': 2,
+            },
+            AlgorithmMetaDataParameter.DATA_FETCHER.value: AlIsolationForest.data_fetcher().metadata()
+        }
 
-        from skATE.shares.message_code import StandardMessageCode
-
-        # verify
-        if kwargs is None:
-            # invalid parameter
-            raise ValueError(StandardMessageCode.E_100_9000_000004.get_formatted_msg(
-                parameter_name='data for prediction'))
-        if self.model is None:
-            # train model before predict
-            raise AttributeError(StandardMessageCode.E_100_9000_000003.get_formatted_msg())
-
-        return self.model.predict(kwargs['data'])
+    @staticmethod
+    def data_fetcher():
+        """
+        get data fetcher class
+        """
+        from skATE.data_mysql.segment_latency_fetcher import SegmentLatencyFetcher
+        return SegmentLatencyFetcher

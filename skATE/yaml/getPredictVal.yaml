@@ -8,15 +8,21 @@ parameters:
     required: true
     type: "string"
     description: "process id. This id is the return value of the 'Declare algorithm service' function"
+  - name: "body"
+    in: "body"
+    required: true
+    schema:
+      $ref: '#definitions/BasePostBody'
+    description: "Data object"
 responses:
   200:
     description: predicted value
     schema:
-      $ref: '#/definitions/RecommendRsp'
+      $ref: '#/definitions/BaseRsp'
     examples:
-      rtn: {'body': {'predicted value'}, 'is_success': true, 'msg': null}
+      rtn: {'body': ['predicted value as array'], 'is_success': true, 'msg': null}
 definitions:
-  RecommendRsp:
+  BaseRsp:
     type: object
     properties:
       body:
@@ -28,3 +34,9 @@ definitions:
       msg:
         type: string
         description: return message
+  BasePostBody:
+    type: object
+    properties:
+      data:
+        type: object
+        description: data object
