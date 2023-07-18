@@ -84,6 +84,15 @@ def override_config_via_cli(args, conf_info: ConfigInfo) -> ConfigInfo:
     if args.skLogLevel is not None:
         conf_info.sk_log_level = args.skLogLevel
 
+    if args.isDnnEnabled is not None:
+        conf_info.neural_networks_is_dnn_enabled = args.isDnnEnabled
+    if args.isGpuEnabled is not None:
+        conf_info.neural_networks_is_gpu_enabled = args.isGpuEnabled
+    if args.nnNeuralNetworksProxy is not None:
+        conf_info.neural_networks_neural_networks_proxy = args.nnNeuralNetworksProxy
+    if args.nnNeuralNetworksProxyGpu is not None:
+        conf_info.neural_networks_neural_networks_proxy_gpu = args.nnNeuralNetworksProxyGpu
+
     return conf_info
 
 
