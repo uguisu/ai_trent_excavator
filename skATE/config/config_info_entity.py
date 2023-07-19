@@ -227,7 +227,13 @@ class ConfigInfo:
 
     @neural_networks_is_gpu_enabled.setter
     def neural_networks_is_gpu_enabled(self, neural_networks_is_gpu_enabled):
-        self._neural_networks_is_gpu_enabled = eval(neural_networks_is_gpu_enabled)
+        _wrk_neural_networks_is_gpu_enabled = None
+        if neural_networks_is_gpu_enabled is not None:
+            if isinstance(neural_networks_is_gpu_enabled, str):
+                _wrk_neural_networks_is_gpu_enabled = eval(neural_networks_is_gpu_enabled)
+            if isinstance(neural_networks_is_gpu_enabled, bool):
+                _wrk_neural_networks_is_gpu_enabled = neural_networks_is_gpu_enabled
+        self._neural_networks_is_gpu_enabled = _wrk_neural_networks_is_gpu_enabled
 
     @property
     def neural_networks_neural_networks_proxy(self) -> Union[None, str]:
