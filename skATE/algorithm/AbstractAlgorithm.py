@@ -15,7 +15,7 @@ class BaseAlgorithm:
 
         # data (a pandas DataFrame for example)
         self._data = None
-        # model
+        # TODO model ???
         self._model = None
 
     @property
