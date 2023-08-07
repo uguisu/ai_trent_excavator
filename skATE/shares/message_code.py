@@ -40,6 +40,7 @@ class StandardMessageCode(Enum):
     I_100_9000_200012 = (1009000200012, 'Call {method_name}() start')
     I_100_9000_200013 = (1009000200013, 'Call {method_name}() end')
     I_100_9000_200014 = (1009000200014, 'CUDA version: {cuda_version}')
+    I_100_9000_200015 = (1009000200015, 'Current accelerator is: {device}')
 
 
     def get_code(self):
