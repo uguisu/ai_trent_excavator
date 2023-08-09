@@ -108,14 +108,15 @@ def show_model_info(tgt_model):
         trainable_num = sum(p.numel() for p in tgt_model.parameters() if p.requires_grad)
         return f'Total: {total_num:,} | Trainable: {trainable_num:,}'
 
-    rtn = (f'==================================== Model Info ===================================='
+    rtn = (f'\n'
+           f'==================================== Model Info ====================================\n'
            f''
-           f'Model Architecture:'
-           f'------------------------------------------------------------------------------------'
-           f'{tgt_model}'
-           f'------------------------------------------------------------------------------------'
-           f'{calculate_parameter_number()}'
-           f'====================================================================================')
+           f'Model Architecture:\n'
+           f'------------------------------------------------------------------------------------\n'
+           f'{tgt_model}\n'
+           f'------------------------------------------------------------------------------------\n'
+           f'{calculate_parameter_number()}\n'
+           f'====================================================================================\n')
 
     return rtn
 
@@ -129,7 +130,11 @@ class AlNnSkateMLP(BaseAlgorithm):
 
     def __init__(self,
                  log,
-                 log_level: int):
+                 log_level: int,
+                 in_dim: int,
+                 hidden_dim: int,
+                 out_dim: int,
+                 epoch: int = 100):
         """
         init
 
@@ -137,6 +142,10 @@ class AlNnSkateMLP(BaseAlgorithm):
 
         :param log: logger object
         :param log_level: log level
+        :param in_dim: input dimension
+        :param hidden_dim: hidden dimension
+        :param out_dim: output dimension
+        :param epoch: epoch
         """
 
         super(AlNnSkateMLP, self).__init__()
@@ -154,13 +163,13 @@ class AlNnSkateMLP(BaseAlgorithm):
             self._logger.info(StandardMessageCode.I_100_9000_200015.get_formatted_msg(device=self.device))
 
         # hyper-parameters
-        self.epoch = 300
+        self.epoch = epoch
         self.batch_size = 32
         self.training_proportion = 0.8
         self.lr = 0.0001
-        self.in_dim = 38
-        self.hidden_dim = 192
-        self.out_dim = 1
+        self.in_dim = in_dim
+        self.hidden_dim = hidden_dim
+        self.out_dim = out_dim
 
         # init model
         self.init_model()
