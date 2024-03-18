@@ -11,6 +11,7 @@ REQUIRED_PACKAGES = [
     'Flask==2.2.3',
     'cheroot==9.0.0',
     'flasgger==0.9.7.1',
+    'Werkzeug==2.2.2',
     # algorithm
     'scikit-learn==1.2.2',
     # data model
@@ -57,8 +58,7 @@ def make_sure_packages(config_info_entity: ConfigInfo, logger):
             config_info_entity.dynamic_pip_proxy,
         ])
 
-    for req_pkg in REQUIRED_PACKAGES:
-        d_pip.install_single_package(req_pkg)
+    d_pip.make_sure_packages(REQUIRED_PACKAGES)
 
     # install packages for neural network
     if config_info_entity.neural_networks_is_dnn_enabled is not None \
@@ -71,8 +71,7 @@ def make_sure_packages(config_info_entity: ConfigInfo, logger):
                 StaticResources.DEFAULT_PYPI_HOST,
             ])
             d_pip.extra_index_url = config_info_entity.neural_networks_neural_networks_proxy_gpu
-            for req_pkg in DNN_PACKAGES_GPU:
-                d_pip.install_single_package(req_pkg)
+            d_pip.make_sure_packages(DNN_PACKAGES_GPU)
 
             gpu_device_detection = False
             cuda_version = 'unknown'
@@ -101,7 +100,6 @@ def make_sure_packages(config_info_entity: ConfigInfo, logger):
                 StaticResources.DEFAULT_PYPI_HOST,
             ])
             d_pip.extra_index_url = config_info_entity.neural_networks_neural_networks_proxy
-            for req_pkg in DNN_PACKAGES_CPU_ONLY:
-                d_pip.install_single_package(req_pkg)
+            d_pip.make_sure_packages(DNN_PACKAGES_CPU_ONLY)
 
     del d_pip
