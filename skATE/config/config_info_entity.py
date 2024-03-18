@@ -50,6 +50,17 @@ class ConfigInfo:
         # log level
         self._sk_log_level = None
 
+        # [SECTION] neural_networks
+        # is_dnn_enabled, a main settings of neural networks section.
+        # Only by setting this option to True will the following content take effect
+        self._neural_networks_is_dnn_enabled = None
+        # User can use GPU to significantly improve the training performance
+        self._neural_networks_is_gpu_enabled = None
+        # when use CPU only, setup the proxy of network
+        self._neural_networks_neural_networks_proxy = None
+        # when use GPU, Nvidia CUDA 11.6 is required
+        self._neural_networks_neural_networks_proxy_gpu = None
+
     @staticmethod
     def section_map() -> dict:
         """
@@ -79,6 +90,12 @@ class ConfigInfo:
             ],
             'sk_log': [
                 'level',
+            ],
+            'neural_networks': [
+                'is_dnn_enabled',
+                'is_gpu_enabled',
+                'neural_networks_proxy',
+                'neural_networks_proxy_gpu',
             ],
         }
 
@@ -195,3 +212,41 @@ class ConfigInfo:
     @sk_log_level.setter
     def sk_log_level(self, sk_log_level):
         self._sk_log_level = int(sk_log_level)
+
+    @property
+    def neural_networks_is_dnn_enabled(self) -> Union[None, bool]:
+        return self._neural_networks_is_dnn_enabled
+
+    @neural_networks_is_dnn_enabled.setter
+    def neural_networks_is_dnn_enabled(self, neural_networks_is_dnn_enabled):
+        self._neural_networks_is_dnn_enabled = eval(neural_networks_is_dnn_enabled)
+
+    @property
+    def neural_networks_is_gpu_enabled(self) -> Union[None, bool]:
+        return self._neural_networks_is_gpu_enabled
+
+    @neural_networks_is_gpu_enabled.setter
+    def neural_networks_is_gpu_enabled(self, neural_networks_is_gpu_enabled):
+        _wrk_neural_networks_is_gpu_enabled = None
+        if neural_networks_is_gpu_enabled is not None:
+            if isinstance(neural_networks_is_gpu_enabled, str):
+                _wrk_neural_networks_is_gpu_enabled = eval(neural_networks_is_gpu_enabled)
+            if isinstance(neural_networks_is_gpu_enabled, bool):
+                _wrk_neural_networks_is_gpu_enabled = neural_networks_is_gpu_enabled
+        self._neural_networks_is_gpu_enabled = _wrk_neural_networks_is_gpu_enabled
+
+    @property
+    def neural_networks_neural_networks_proxy(self) -> Union[None, str]:
+        return self._neural_networks_neural_networks_proxy
+
+    @neural_networks_neural_networks_proxy.setter
+    def neural_networks_neural_networks_proxy(self, neural_networks_neural_networks_proxy):
+        self._neural_networks_neural_networks_proxy = neural_networks_neural_networks_proxy
+
+    @property
+    def neural_networks_neural_networks_proxy_gpu(self) -> Union[None, str]:
+        return self._neural_networks_neural_networks_proxy_gpu
+
+    @neural_networks_neural_networks_proxy_gpu.setter
+    def neural_networks_neural_networks_proxy_gpu(self, neural_networks_neural_networks_proxy_gpu):
+        self._neural_networks_neural_networks_proxy_gpu = neural_networks_neural_networks_proxy_gpu

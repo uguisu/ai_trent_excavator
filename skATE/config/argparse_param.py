@@ -80,6 +80,27 @@ def declare_argparse():
                         default=None,
                         help='Log level')
 
+    parser.add_argument('--isDnnEnabled',
+                        action='store',
+                        dest='isDnnEnabled',
+                        default=None,
+                        help='Is Dnn enabled')
+    parser.add_argument('--isGpuEnabled',
+                        action='store',
+                        dest='isGpuEnabled',
+                        default=None,
+                        help='Is GPU enabled')
+    parser.add_argument('--nnNeuralNetworksProxy',
+                        action='store',
+                        dest='nnNeuralNetworksProxy',
+                        default=None,
+                        help='Package install proxy, for CPU')
+    parser.add_argument('--nnNeuralNetworksProxyGpu',
+                        action='store',
+                        dest='nnNeuralNetworksProxyGpu',
+                        default=None,
+                        help='Package install proxy, for GPU')
+
     return parser
 
 
