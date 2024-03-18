@@ -27,7 +27,7 @@ shares.show_logo()
 config_info_entity = load_config(args)
 
 # make sure packages
-shares.make_sure_packages(config_info_entity)
+shares.make_sure_packages(config_info_entity, logger)
 
 # ============================================================
 # main process
