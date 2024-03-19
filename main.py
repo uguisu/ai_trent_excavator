@@ -34,7 +34,7 @@ shares.make_sure_packages(config_info_entity, logger)
 # NOTICE: DO NOT MOVE FOLLOWING 'IMPORT' CODE TO THE TOP
 # ============================================================
 import os
-import static_info
+from skATE import static_info
 import numpy as np
 
 from cheroot.wsgi import PathInfoDispatcher, Server
